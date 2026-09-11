@@ -103,11 +103,11 @@ document.addEventListener('click', (e) => {
         window.setTimeout(() => {
             outgoing.classList.remove('is-leave-next', 'is-leave-prev');
             busy = false;
-        }, 720);
+        }, 1450);
     }
     function start() {
         stop();
-        timer = window.setInterval(() => go(index + 1, 1), 3000);
+        timer = window.setInterval(() => go(index + 1, 1), 5000);
     }
     function stop() {
         window.clearInterval(timer);
