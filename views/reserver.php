@@ -33,7 +33,7 @@ $extras = t_arr('book.extra_items');
 
             <div id="booking-step-1">
                 <div class="booking-layout">
-                    <div>
+                    <div class="booking-dates">
                         <div class="calendar" data-calendar data-mode="booking"></div>
                         <div class="legend">
                             <span><i class="dot avail"></i> <?= e(t('calendar.available')) ?></span>
@@ -45,28 +45,30 @@ $extras = t_arr('book.extra_items');
                         <p class="hint"><?= e(t('calendar.select')) ?> <?= e(t('calendar.checkout_hint')) ?></p>
                     </div>
                     <aside class="booking-panel">
-                        <h2 class="panel-title"><?= e(t('book.step1')) ?></h2>
-                        <label><?= e(t('booking_widget.adults')) ?>
-                            <select name="adults" id="adults">
-                                <?php for ($i = 1; $i <= 6; $i++): ?>
-                                    <option value="<?= $i ?>" <?= $i === 2 ? 'selected' : '' ?>><?= $i ?></option>
-                                <?php endfor; ?>
-                            </select>
-                        </label>
-                        <label><?= e(t('booking_widget.children')) ?>
-                            <select name="children" id="children">
-                                <?php for ($i = 0; $i <= 4; $i++): ?>
-                                    <option value="<?= $i ?>"><?= $i ?></option>
-                                <?php endfor; ?>
-                            </select>
-                        </label>
-                        <div id="quote" class="quote" hidden></div>
-                        <p id="quote-error" class="form-error" hidden></p>
-                        <ul class="included-mini">
-                            <?php foreach (t_arr('book.included') as $item): ?>
-                                <li><?= e($item) ?></li>
-                            <?php endforeach; ?>
-                        </ul>
+                        <div class="booking-panel-body">
+                            <h2 class="panel-title"><?= e(t('book.step1')) ?></h2>
+                            <label><?= e(t('booking_widget.adults')) ?>
+                                <select name="adults" id="adults">
+                                    <?php for ($i = 1; $i <= 6; $i++): ?>
+                                        <option value="<?= $i ?>" <?= $i === 2 ? 'selected' : '' ?>><?= $i ?></option>
+                                    <?php endfor; ?>
+                                </select>
+                            </label>
+                            <label><?= e(t('booking_widget.children')) ?>
+                                <select name="children" id="children">
+                                    <?php for ($i = 0; $i <= 4; $i++): ?>
+                                        <option value="<?= $i ?>"><?= $i ?></option>
+                                    <?php endfor; ?>
+                                </select>
+                            </label>
+                            <div id="quote" class="quote" hidden></div>
+                            <p id="quote-error" class="form-error" hidden></p>
+                            <ul class="included-mini">
+                                <?php foreach (t_arr('book.included') as $item): ?>
+                                    <li><?= e($item) ?></li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
                         <button class="btn btn-terracotta" type="button" id="step-continue" disabled><?= e(t('book.continue')) ?></button>
                     </aside>
                 </div>
@@ -128,10 +130,6 @@ $extras = t_arr('book.extra_items');
                             <button class="btn btn-terracotta" type="submit" id="book-submit"><?= e(t('book.submit')) ?></button>
                         </div>
                         <p id="book-success" class="form-success" hidden><?= e(t('book.success')) ?></p>
-                        <aside id="book-payinfo" class="pay-letter-box" hidden>
-                            <h3><?= e(t('book.payinfo_title')) ?></h3>
-                            <pre id="book-letter" class="pay-letter"></pre>
-                        </aside>
                     </div>
                     <aside class="booking-panel" id="quote-summary"></aside>
                 </div>

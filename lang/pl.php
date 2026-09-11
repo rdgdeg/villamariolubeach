@@ -213,7 +213,7 @@ return [
         'terms_title' => 'Dla informacji',
         'payinfo_title' => 'Wpłata zaliczki',
         'submit' => 'Wyślij zapytanie',
-        'success' => 'Zapytanie zostało zapisane. Prosimy wpłacić zaliczkę, aby zarezerwować willę.',
+        'success' => 'Zapytanie zostało zapisane. Sprawdzimy dostępność i potwierdzimy e-mailem przed jakąkolwiek płatnością.',
         'errors' => [
             'invalid_dates' => 'Nieprawidłowe daty.',
             'checkout_before_checkin' => 'Wyjazd musi być po przyjeździe.',

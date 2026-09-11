@@ -146,3 +146,77 @@
         form.requestSubmit(btn);
     });
 })();
+
+(() => {
+    const dialog = document.getElementById('mail-compose-dialog');
+    if (!dialog) return;
+    const title = dialog.querySelector('[data-mail-title]');
+    const status = dialog.querySelector('[data-mail-status]');
+    const to = dialog.querySelector('[data-mail-to]');
+    const subject = dialog.querySelector('[data-mail-subject]');
+    const body = dialog.querySelector('[data-mail-body]');
+    const sendBtn = dialog.querySelector('[data-mail-send]');
+    let pendingForm = null;
+
+    function setHidden(form, name, value) {
+        let field = form.querySelector(`[name="${name}"]`);
+        if (!field) {
+            field = document.createElement('input');
+            field.type = 'hidden';
+            field.name = name;
+            form.appendChild(field);
+        }
+        field.value = value;
+    }
+
+    document.querySelectorAll('[data-mail-compose]').forEach((form) => {
+        form.addEventListener('submit', async (e) => {
+            if (form.dataset.mailReady === '1') {
+                delete form.dataset.mailReady;
+                return;
+            }
+            e.preventDefault();
+            const kind = form.querySelector('[name="kind"]')?.value || '';
+            const sheet = document.querySelector('[data-booking-id]');
+            const id = sheet?.dataset.bookingId || '';
+            const deposit = document.querySelector('[data-deposit-sync] [name="deposit_amount"]')?.value || '';
+            pendingForm = form;
+            if (sendBtn) sendBtn.disabled = true;
+            if (title) title.textContent = 'Préparation de l’e-mail…';
+            if (status) status.textContent = 'Chargement du texte généré.';
+            if (to) to.value = '';
+            if (subject) subject.value = '';
+            if (body) body.value = '';
+            dialog.showModal();
+            try {
+                const url = new URL(`${VMB.adminBase}/booking/${id}`, window.location.origin);
+                url.searchParams.set('preview', kind);
+                if (deposit) url.searchParams.set('deposit_amount', deposit);
+                const res = await fetch(url.toString(), { credentials: 'same-origin' });
+                const data = await res.json();
+                if (!data.ok) throw new Error(data.error || 'preview');
+                if (title) title.textContent = data.label || 'E-mail';
+                if (status) status.textContent = 'Vous pouvez encore modifier le texte avant l’envoi.';
+                if (to) to.value = data.to || '';
+                if (subject) subject.value = data.subject || '';
+                if (body) body.value = data.body || '';
+                if (sendBtn) sendBtn.disabled = false;
+            } catch (err) {
+                if (title) title.textContent = 'E-mail';
+                if (status) status.textContent = 'Impossible de charger l’aperçu.';
+            }
+        });
+    });
+
+    dialog.addEventListener('close', () => {
+        const form = pendingForm;
+        pendingForm = null;
+        if (sendBtn) sendBtn.disabled = true;
+        if (!form || dialog.returnValue !== 'ok') return;
+        setHidden(form, 'mail_to', to ? to.value : '');
+        setHidden(form, 'mail_subject', subject ? subject.value : '');
+        setHidden(form, 'mail_body', body ? body.value : '');
+        form.dataset.mailReady = '1';
+        form.requestSubmit();
+    });
+})();

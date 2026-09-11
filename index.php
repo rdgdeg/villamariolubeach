@@ -3,8 +3,15 @@
 require __DIR__ . '/src/bootstrap.php';
 
 $uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
-$basePath = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? ''), '/');
-if ($basePath && $basePath !== '/' && str_starts_with($uri, $basePath)) {
+$scriptName = str_replace('\\', '/', (string) ($_SERVER['SCRIPT_NAME'] ?? ''));
+$frontController = (bool) preg_match('#/(index|router)\.php$#', $scriptName);
+$basePath = rtrim(dirname($scriptName), '/');
+if (
+    $frontController
+    && $basePath
+    && $basePath !== '/'
+    && str_starts_with($uri, $basePath)
+) {
     $uri = substr($uri, strlen($basePath)) ?: '/';
 }
 $path = trim($uri, '/');
@@ -104,6 +111,34 @@ function handle_api(array $segments): void
         json_response($result, !empty($result['ok']) ? 200 : 422);
     }
 
+    if ($endpoint === 'mail-preview' && request_method() === 'GET') {
+        if (!Auth::check()) {
+            json_response(['ok' => false, 'error' => 'auth'], 401);
+        }
+        $booking = BookingService::find((int) query('id', 0));
+        $kind = StayCopy::alias((string) query('kind', ''));
+        $allowed = array_keys(EmailTemplates::kinds());
+        if (!$booking || !in_array($kind, $allowed, true) || $kind === 'host') {
+            json_response(['ok' => false, 'error' => 'not_found'], 404);
+        }
+        $rawAmount = trim((string) query('deposit_amount', ''));
+        if ($rawAmount !== '') {
+            $amount = (float) str_replace(',', '.', $rawAmount);
+            $rental = round((float) $booking['rental_subtotal'] - (float) $booking['discount_amount'], 2);
+            $booking['deposit_amount'] = round(max(0, $amount), 2);
+            $booking['deposit_percent'] = $rental > 0 ? round(($booking['deposit_amount'] / $rental) * 100, 2) : 0.0;
+        }
+        $msg = StayCopy::email($booking, $kind);
+        json_response([
+            'ok' => true,
+            'kind' => $kind,
+            'label' => EmailTemplates::kinds()[$kind] ?? $kind,
+            'to' => (string) $booking['guest_email'],
+            'subject' => $msg['subject'],
+            'body' => $msg['body'],
+        ]);
+    }
+
     if ($endpoint === 'contact' && request_method() === 'POST') {
         Csrf::requireValid();
         if (trim((string) post('company')) !== '') {
@@ -145,6 +180,25 @@ function json_input(): array
     $raw = file_get_contents('php://input');
     $data = json_decode($raw ?: '[]', true);
     return is_array($data) ? $data : [];
+}
+
+/** @return array{to?:string,subject?:string,body?:string} */
+function admin_mail_override(): array
+{
+    $override = [];
+    $to = trim((string) post('mail_to'));
+    $subject = trim((string) post('mail_subject'));
+    $body = (string) post('mail_body');
+    if ($to !== '') {
+        $override['to'] = $to;
+    }
+    if ($subject !== '') {
+        $override['subject'] = $subject;
+    }
+    if (trim($body) !== '') {
+        $override['body'] = $body;
+    }
+    return $override;
 }
 
 function handle_admin(array $segments): void
@@ -190,6 +244,29 @@ function handle_admin(array $segments): void
             flash('error', 'Réservation introuvable.');
             redirect(base_url('admin'));
         }
+        if (request_method() === 'GET' && query('preview')) {
+            $kind = StayCopy::alias((string) query('preview'));
+            $allowed = array_keys(EmailTemplates::kinds());
+            if (!in_array($kind, $allowed, true) || $kind === 'host') {
+                json_response(['ok' => false, 'error' => 'not_found'], 404);
+            }
+            $rawAmount = trim((string) query('deposit_amount', ''));
+            if ($rawAmount !== '') {
+                $amount = (float) str_replace(',', '.', $rawAmount);
+                $rental = round((float) $booking['rental_subtotal'] - (float) $booking['discount_amount'], 2);
+                $booking['deposit_amount'] = round(max(0, $amount), 2);
+                $booking['deposit_percent'] = $rental > 0 ? round(($booking['deposit_amount'] / $rental) * 100, 2) : 0.0;
+            }
+            $msg = StayCopy::email($booking, $kind);
+            json_response([
+                'ok' => true,
+                'kind' => $kind,
+                'label' => EmailTemplates::kinds()[$kind] ?? $kind,
+                'to' => (string) $booking['guest_email'],
+                'subject' => $msg['subject'],
+                'body' => $msg['body'],
+            ]);
+        }
         if (request_method() === 'POST') {
             Csrf::requireValid();
             $form = (string) post('form');
@@ -205,7 +282,7 @@ function handle_admin(array $segments): void
                 if (!in_array($kind, $allowed, true)) {
                     $kind = 'deposit_reminder_1';
                 }
-                $sent = Mailer::sendBooking($booking, $kind);
+                $sent = Mailer::sendBooking($booking, $kind, admin_mail_override());
                 BookingService::markReminded($id, $kind);
                 BookingEvents::log($id, $kind);
                 $labels = [
@@ -228,7 +305,7 @@ function handle_admin(array $segments): void
                 if (!in_array($kind, $allowed, true)) {
                     $kind = 'prearrival';
                 }
-                $sent = Mailer::sendBooking($booking, $kind);
+                $sent = Mailer::sendBooking($booking, $kind, admin_mail_override());
                 BookingEvents::log($id, $kind);
                 if ($kind === 'prearrival') {
                     db()->prepare('UPDATE bookings SET prearrival_sent_at = ?, updated_at = ? WHERE id = ?')

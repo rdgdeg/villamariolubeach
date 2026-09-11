@@ -225,7 +225,7 @@ return [
         'terms_title' => 'For your information',
         'payinfo_title' => 'Paying the deposit',
         'submit' => 'Send request',
-        'success' => 'Your request has been received. Please pay the deposit to secure the villa.',
+        'success' => 'Your request has been received. We will check availability and email you before any payment is due.',
         'errors' => [
             'invalid_dates' => 'Invalid dates.',
             'checkout_before_checkin' => 'Departure must be after arrival.',

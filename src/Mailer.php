@@ -41,13 +41,22 @@ class Mailer
         return (bool) $ok;
     }
 
-    public static function sendBooking(array $booking, string $kind): bool
+    public static function sendBooking(array $booking, string $kind, array $override = []): bool
     {
         $msg = StayCopy::email($booking, $kind);
+        $to = trim((string) ($override['to'] ?? $booking['guest_email']));
+        $subject = trim((string) ($override['subject'] ?? $msg['subject']));
+        $body = (string) ($override['body'] ?? $msg['body']);
+        if ($subject === '') {
+            $subject = $msg['subject'];
+        }
+        if (trim($body) === '') {
+            $body = $msg['body'];
+        }
         return self::send(
-            (string) $booking['guest_email'],
-            $msg['subject'],
-            $msg['body'],
+            $to,
+            $subject,
+            $body,
             null,
             $kind,
             (int) ($booking['id'] ?? 0)

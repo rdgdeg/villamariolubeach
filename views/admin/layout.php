@@ -104,6 +104,25 @@
             </div>
         </form>
     </dialog>
+    <dialog class="stay-dialog mail-dialog" id="mail-compose-dialog">
+        <form method="dialog" class="stay-dialog-card mail-compose-card">
+            <h3 data-mail-title>E-mail</h3>
+            <p class="hint" data-mail-status></p>
+            <label>Destinataire
+                <input type="email" data-mail-to required>
+            </label>
+            <label>Objet
+                <input data-mail-subject required>
+            </label>
+            <label>Message
+                <textarea data-mail-body rows="16" required></textarea>
+            </label>
+            <div class="stay-dialog-actions">
+                <button value="cancel">Annuler</button>
+                <button value="ok" data-mail-send disabled>Envoyer</button>
+            </div>
+        </form>
+    </dialog>
     <script>window.VMB = {
         lang: 'fr',
         admin: true,

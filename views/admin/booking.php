@@ -50,7 +50,7 @@ $mailConfirm = static function (string $label) use ($guestEmail): string {
 ?>
 <p class="booking-back"><a class="link" href="<?= e(base_url('admin')) ?>">← Retour à la liste</a></p>
 
-<article class="booking-sheet">
+<article class="booking-sheet" data-booking-id="<?= (int) $booking['id'] ?>">
     <header class="booking-head">
         <div>
             <h2><?= e($booking['guest_name']) ?></h2>
@@ -221,25 +221,25 @@ $mailConfirm = static function (string $label) use ($guestEmail): string {
             <div class="mail-group">
                 <h4>Paiement</h4>
                 <div class="mail-btns">
-                    <form method="post" onsubmit="<?= e($mailConfirm('Relance acompte 1')) ?>">
+                    <form method="post" data-mail-compose>
                         <?= Csrf::field() ?>
                         <input type="hidden" name="form" value="remind">
                         <input type="hidden" name="kind" value="deposit_reminder_1">
                         <button type="submit" data-deposit-mail-btn>Relance acompte 1 (<?= e(money((float) $booking['deposit_amount'])) ?>)</button>
                     </form>
-                    <form method="post" onsubmit="<?= e($mailConfirm('Relance acompte 2')) ?>">
+                    <form method="post" data-mail-compose>
                         <?= Csrf::field() ?>
                         <input type="hidden" name="form" value="remind">
                         <input type="hidden" name="kind" value="deposit_reminder_2">
                         <button type="submit">Relance acompte 2</button>
                     </form>
-                    <form method="post" onsubmit="<?= e($mailConfirm('Demande de solde')) ?>">
+                    <form method="post" data-mail-compose>
                         <?= Csrf::field() ?>
                         <input type="hidden" name="form" value="remind">
                         <input type="hidden" name="kind" value="balance">
                         <button type="submit" data-balance-mail-btn>Demande de solde (<?= e(money($balance)) ?>)</button>
                     </form>
-                    <form method="post" onsubmit="<?= e($mailConfirm('Relance solde')) ?>">
+                    <form method="post" data-mail-compose>
                         <?= Csrf::field() ?>
                         <input type="hidden" name="form" value="remind">
                         <input type="hidden" name="kind" value="balance_reminder">
@@ -250,13 +250,13 @@ $mailConfirm = static function (string $label) use ($guestEmail): string {
             <div class="mail-group">
                 <h4>Séjour</h4>
                 <div class="mail-btns">
-                    <form method="post" onsubmit="<?= e($mailConfirm('Mail d’arrivée')) ?>">
+                    <form method="post" data-mail-compose>
                         <?= Csrf::field() ?>
                         <input type="hidden" name="form" value="journey">
                         <input type="hidden" name="kind" value="prearrival">
                         <button type="submit">Mail d’arrivée (J−7)</button>
                     </form>
-                    <form method="post" onsubmit="<?= e($mailConfirm('Mail merci / avis')) ?>">
+                    <form method="post" data-mail-compose>
                         <?= Csrf::field() ?>
                         <input type="hidden" name="form" value="journey">
                         <input type="hidden" name="kind" value="thanks">

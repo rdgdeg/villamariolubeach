@@ -213,7 +213,7 @@ return [
         'terms_title' => 'Per vostra informazione',
         'payinfo_title' => 'Pagamento dell’acconto',
         'submit' => 'Invia la richiesta',
-        'success' => 'La richiesta è stata registrata. Vi preghiamo di versare l’acconto per bloccare la villa.',
+        'success' => 'La richiesta è stata registrata. Verifichiamo la disponibilità e vi confermiamo via e-mail prima di qualsiasi pagamento.',
         'errors' => [
             'invalid_dates' => 'Date non valide.',
             'checkout_before_checkin' => 'La partenza deve essere dopo l’arrivo.',

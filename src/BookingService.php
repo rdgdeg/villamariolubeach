@@ -99,7 +99,6 @@ class BookingService
             'ok' => true,
             'id' => $id,
             'quote' => $quote,
-            'letter' => $booking ? StayCopy::paymentLetter($booking) : '',
         ];
     }
 

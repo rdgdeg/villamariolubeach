@@ -254,6 +254,13 @@ tr.is-clickable:hover { background: #f8efe2; }
 .stay-dialog-card h3 { margin: 0; font-size: 1.05rem; }
 .stay-dialog-card p { margin: 0; }
 .stay-dialog-actions { display: flex; justify-content: flex-end; gap: .45rem; }
+.mail-dialog { max-width: 42rem; }
+.mail-compose-card textarea {
+    min-height: 16rem;
+    font: inherit;
+    line-height: 1.45;
+    resize: vertical;
+}
 .switch {
     display: flex;
     flex-direction: row;

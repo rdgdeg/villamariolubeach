@@ -282,7 +282,7 @@ return [
         'terms_title' => 'Pour votre information',
         'payinfo_title' => 'Paiement de l’acompte',
         'submit' => 'Envoyer la demande',
-        'success' => 'Votre demande a bien été enregistrée. Merci de verser l’acompte pour bloquer la villa.',
+        'success' => 'Votre demande a bien été enregistrée. Nous vérifions la disponibilité et vous confirmons par e-mail avant tout paiement.',
         'errors' => [
             'invalid_dates' => 'Dates invalides.',
             'checkout_before_checkin' => 'La date de départ doit être après l’arrivée.',

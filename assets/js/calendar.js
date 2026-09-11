@@ -173,7 +173,12 @@
                 <div><span>${i18n.caution}</span><span>${euro(data.caution)}</span></div>
             `;
             if (submit) submit.disabled = false;
-            if (cont) cont.disabled = false;
+            if (cont) {
+                cont.disabled = false;
+                requestAnimationFrame(() => {
+                    cont.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+                });
+            }
             const summary = document.getElementById('quote-summary');
             if (summary) {
                 summary.innerHTML = `<h2 class="panel-title">${i18n.summary || ''}</h2><div class="quote">${box.innerHTML}</div>`;
@@ -242,12 +247,6 @@
                 }
                 err.hidden = true;
                 ok.hidden = false;
-                const pay = document.getElementById('book-payinfo');
-                const letter = document.getElementById('book-letter');
-                if (pay && letter && data.letter) {
-                    letter.textContent = data.letter;
-                    pay.hidden = false;
-                }
                 start = null;
                 end = null;
                 form.querySelectorAll('input, textarea, select, button').forEach((el) => {

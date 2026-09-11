@@ -213,7 +213,7 @@ return [
         'terms_title' => 'Zur Information',
         'payinfo_title' => 'Zahlung der Anzahlung',
         'submit' => 'Anfrage senden',
-        'success' => 'Ihre Anfrage wurde gespeichert. Bitte überweisen Sie die Anzahlung, um die Villa zu sichern.',
+        'success' => 'Ihre Anfrage wurde gespeichert. Wir prüfen die Verfügbarkeit und bestätigen per E-Mail, bevor eine Zahlung fällig wird.',
         'errors' => [
             'invalid_dates' => 'Ungültige Daten.',
             'checkout_before_checkin' => 'Abreise muss nach der Anreise liegen.',

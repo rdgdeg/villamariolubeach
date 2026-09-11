@@ -152,9 +152,22 @@ h2 { font-size: clamp(1.7rem, 3.6vw, 3rem); }
 }
 .hero-veil {
     position: absolute; inset: 0; z-index: 2;
+    pointer-events: none;
     background:
-        radial-gradient(ellipse 78% 70% at 50% 42%, rgba(8, 22, 26, .62) 0%, rgba(8, 22, 26, .38) 52%, rgba(8, 22, 26, .22) 100%),
-        linear-gradient(180deg, rgba(8, 22, 26, .42) 0%, rgba(8, 22, 26, .28) 38%, rgba(8, 22, 26, .62) 100%);
+        radial-gradient(
+            ellipse 46% 50% at 50% 42%,
+            rgba(8, 22, 26, .46) 0%,
+            rgba(8, 22, 26, .18) 34%,
+            rgba(8, 22, 26, .04) 58%,
+            transparent 78%
+        ),
+        linear-gradient(
+            180deg,
+            rgba(8, 22, 26, .30) 0%,
+            transparent 14%,
+            transparent 84%,
+            rgba(8, 22, 26, .22) 100%
+        );
 }
 .hero-content {
     position: relative; z-index: 3;
@@ -163,9 +176,8 @@ h2 { font-size: clamp(1.7rem, 3.6vw, 3rem); }
     color: #fff;
     margin-inline: auto;
     text-shadow:
-        0 1px 1px rgba(0, 0, 0, .55),
-        0 2px 10px rgba(0, 0, 0, .45),
-        0 12px 36px rgba(0, 0, 0, .5);
+        0 1px 2px rgba(0, 0, 0, .65),
+        0 6px 22px rgba(0, 0, 0, .4);
 }
 .hero-content h1 { color: #fff; }
 .hero-content .btn { text-shadow: none; }
@@ -688,11 +700,30 @@ h2 { font-size: clamp(1.7rem, 3.6vw, 3rem); }
 .booking-layout {
     display: grid; grid-template-columns: 1.3fr .8fr; gap: 2rem; align-items: start;
 }
+.booking-dates {
+    position: sticky;
+    top: 5.6rem;
+    z-index: 1;
+    align-self: start;
+    max-height: calc(100dvh - 6.4rem);
+    overflow: auto;
+    background: var(--cream);
+}
 .booking-panel {
     background: var(--paper); padding: 1.3rem; border-radius: var(--radius);
-    border: 1px solid var(--line); position: sticky; top: 5.4rem;
-    display: grid; gap: .8rem;
+    border: 1px solid var(--line); position: sticky; top: 5.6rem;
+    z-index: 2;
+    display: flex; flex-direction: column; gap: .8rem;
+    max-height: calc(100dvh - 6.4rem);
+    overflow: hidden;
 }
+.booking-panel-body {
+    display: grid;
+    gap: .8rem;
+    min-height: 0;
+    overflow: auto;
+}
+#step-continue { width: 100%; flex-shrink: 0; }
 .panel-title { font-size: 1.15rem; margin: 0 0 .2rem; }
 .booking-form, .contact-form { display: grid; gap: .8rem; }
 #booking-step-1, #booking-step-2 { scroll-margin-top: 5.6rem; }
@@ -723,7 +754,7 @@ input, select, textarea {
     position: relative; padding: .12rem 0 .12rem 1.15rem;
 }
 .included-mini li::before { content: "✓"; position: absolute; left: 0; color: var(--olive); }
-#step-continue { width: 100%; }
+#quote-summary { overflow: auto; }
 .extras-box {
     border: 1px solid var(--line); border-radius: 12px;
     padding: .9rem 1.05rem 1.05rem; margin: 0;
@@ -866,7 +897,9 @@ label.chk, .chk {
     .nav.open { display: flex; }
     .nav-book-mobile { display: inline; font-weight: 700; }
     .hero { min-height: 100vh; }
-    .booking-panel { position: static; }
+    .booking-panel,
+    .booking-dates,
+    .booking-panel-body { position: static; max-height: none; overflow: visible; }
     .cookie-banner-inner { flex-direction: column; align-items: stretch; }
     .cookie-banner .btn { width: 100%; }
     .villa-photos img { height: 200px; }

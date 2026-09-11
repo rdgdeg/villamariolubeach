@@ -213,7 +213,7 @@ return [
         'terms_title' => 'Ter informatie',
         'payinfo_title' => 'Betaling van het voorschot',
         'submit' => 'Aanvraag versturen',
-        'success' => 'Uw aanvraag is geregistreerd. Gelieve het voorschot te betalen om de villa te reserveren.',
+        'success' => 'Uw aanvraag is geregistreerd. Wij controleren de beschikbaarheid en bevestigen per e-mail vóór elke betaling.',
         'errors' => [
             'invalid_dates' => 'Ongeldige data.',
             'checkout_before_checkin' => 'Vertrek moet na aankomst vallen.',
