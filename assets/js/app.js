@@ -103,15 +103,14 @@ document.addEventListener('click', (e) => {
         window.setTimeout(() => {
             outgoing.classList.remove('is-leave-next', 'is-leave-prev');
             busy = false;
-        }, 980);
+        }, 720);
     }
     function start() {
         stop();
-        if (reduced) return;
-        timer = setInterval(() => go(index + 1, 1), 6500);
+        timer = window.setInterval(() => go(index + 1, 1), 3000);
     }
     function stop() {
-        clearInterval(timer);
+        window.clearInterval(timer);
     }
 
     root.querySelector('[data-hero-prev]')?.addEventListener('click', () => { go(index - 1, -1); start(); });
@@ -122,8 +121,10 @@ document.addEventListener('click', (e) => {
             start();
         });
     });
-    root.addEventListener('mouseenter', stop);
-    root.addEventListener('mouseleave', start);
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) stop();
+        else start();
+    });
     start();
 })();
 

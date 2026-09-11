@@ -137,7 +137,7 @@ h2 { font-size: clamp(1.7rem, 3.6vw, 3rem); }
     position: absolute; inset: 0; margin: 0;
     z-index: 0;
     transform: translate3d(100%, 0, 0);
-    transition: transform .95s cubic-bezier(.22, 1, .36, 1);
+    transition: transform .7s cubic-bezier(.22, 1, .36, 1);
 }
 .hero-slide.is-active {
     transform: translate3d(0, 0, 0);
