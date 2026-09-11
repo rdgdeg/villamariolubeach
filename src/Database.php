@@ -77,8 +77,8 @@ class Database
     public function upsert(string $table, string $keyColumn, array $data): void
     {
         $columns = array_keys($data);
-        $placeholders = array_map(fn ($c) => ':' . $c, $columns);
         if ($this->driver === 'mysql') {
+            $placeholders = array_map(fn ($c) => ':' . $c, $columns);
             $updates = [];
             foreach ($columns as $c) {
                 if ($c === $keyColumn) {
@@ -93,28 +93,47 @@ class Database
                 implode(',', $placeholders),
                 implode(',', $updates)
             );
-        } else {
-            $updates = [];
-            foreach ($columns as $c) {
-                if ($c === $keyColumn) {
+            $stmt = $this->pdo->prepare($sql);
+            foreach ($data as $k => $v) {
+                $stmt->bindValue(':' . $k, $v);
+            }
+            $stmt->execute();
+            return;
+        }
+
+        // SQLite serverless (Vercel) n’accepte pas toujours INSERT … ON CONFLICT.
+        $exists = $this->pdo->prepare("SELECT 1 FROM {$table} WHERE {$keyColumn} = ?");
+        $exists->execute([$data[$keyColumn] ?? null]);
+        if ($exists->fetch()) {
+            $sets = [];
+            $params = [];
+            foreach ($data as $column => $value) {
+                if ($column === $keyColumn) {
                     continue;
                 }
-                $updates[] = "$c = excluded.$c";
+                $sets[] = "{$column} = ?";
+                $params[] = $value;
             }
-            $sql = sprintf(
-                'INSERT INTO %s (%s) VALUES (%s) ON CONFLICT(%s) DO UPDATE SET %s',
+            if (!$sets) {
+                return;
+            }
+            $params[] = $data[$keyColumn];
+            $this->pdo->prepare(sprintf(
+                'UPDATE %s SET %s WHERE %s = ?',
                 $table,
-                implode(',', $columns),
-                implode(',', $placeholders),
-                $keyColumn,
-                implode(',', $updates)
-            );
+                implode(',', $sets),
+                $keyColumn
+            ))->execute($params);
+            return;
         }
-        $stmt = $this->pdo->prepare($sql);
-        foreach ($data as $k => $v) {
-            $stmt->bindValue(':' . $k, $v);
-        }
-        $stmt->execute();
+
+        $placeholders = implode(',', array_fill(0, count($columns), '?'));
+        $this->pdo->prepare(sprintf(
+            'INSERT INTO %s (%s) VALUES (%s)',
+            $table,
+            implode(',', $columns),
+            $placeholders
+        ))->execute(array_values($data));
     }
 
     private function pk(): string
