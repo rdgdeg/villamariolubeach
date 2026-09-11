@@ -67,54 +67,48 @@ document.addEventListener('click', (e) => {
     let timer;
     let busy = false;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const fadeMs = reduced ? 350 : 1150;
 
-    function direction(from, to) {
-        if (from === slides.length - 1 && to === 0) return 1;
-        if (from === 0 && to === slides.length - 1) return -1;
-        return to > from ? 1 : -1;
-    }
-
-    function go(n, dir) {
+    function go(n) {
         const next = (n + slides.length) % slides.length;
         if (next === index || busy) return;
-        dir = dir ?? direction(index, next);
         const outgoing = slides[index];
         const incoming = slides[next];
         dots.forEach((dot, i) => dot.classList.toggle('is-active', i === next));
 
         if (reduced) {
-            outgoing.classList.remove('is-active');
+            outgoing.classList.remove('is-active', 'is-leaving');
             incoming.classList.add('is-active');
             index = next;
             return;
         }
 
         busy = true;
-        slides.forEach((slide) => {
-            slide.classList.remove('is-leave-next', 'is-leave-prev', 'is-prep-next', 'is-prep-prev');
-        });
-        incoming.classList.add(dir > 0 ? 'is-prep-next' : 'is-prep-prev');
-        incoming.getBoundingClientRect();
         outgoing.classList.remove('is-active');
-        outgoing.classList.add(dir > 0 ? 'is-leave-next' : 'is-leave-prev');
-        incoming.classList.remove('is-prep-next', 'is-prep-prev');
+        outgoing.classList.add('is-leaving');
         incoming.classList.add('is-active');
+        const img = incoming.querySelector('img');
+        if (img) {
+            img.style.animation = 'none';
+            void img.offsetWidth;
+            img.style.animation = '';
+        }
         index = next;
         window.setTimeout(() => {
-            outgoing.classList.remove('is-leave-next', 'is-leave-prev');
+            outgoing.classList.remove('is-leaving');
             busy = false;
-        }, 1450);
+        }, fadeMs);
     }
     function start() {
         stop();
-        timer = window.setInterval(() => go(index + 1, 1), 5000);
+        timer = window.setInterval(() => go(index + 1), 5000);
     }
     function stop() {
         window.clearInterval(timer);
     }
 
-    root.querySelector('[data-hero-prev]')?.addEventListener('click', () => { go(index - 1, -1); start(); });
-    root.querySelector('[data-hero-next]')?.addEventListener('click', () => { go(index + 1, 1); start(); });
+    root.querySelector('[data-hero-prev]')?.addEventListener('click', () => { go(index - 1); start(); });
+    root.querySelector('[data-hero-next]')?.addEventListener('click', () => { go(index + 1); start(); });
     dots.forEach((dot) => {
         dot.addEventListener('click', () => {
             go(Number(dot.dataset.heroDot));
