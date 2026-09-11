@@ -65,24 +65,57 @@ document.addEventListener('click', (e) => {
     if (slides.length < 2) return;
     let index = 0;
     let timer;
+    let busy = false;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    function go(n) {
-        index = (n + slides.length) % slides.length;
-        slides.forEach((slide, i) => slide.classList.toggle('is-active', i === index));
-        dots.forEach((dot, i) => dot.classList.toggle('is-active', i === index));
+    function direction(from, to) {
+        if (from === slides.length - 1 && to === 0) return 1;
+        if (from === 0 && to === slides.length - 1) return -1;
+        return to > from ? 1 : -1;
+    }
+
+    function go(n, dir) {
+        const next = (n + slides.length) % slides.length;
+        if (next === index || busy) return;
+        dir = dir ?? direction(index, next);
+        const outgoing = slides[index];
+        const incoming = slides[next];
+        dots.forEach((dot, i) => dot.classList.toggle('is-active', i === next));
+
+        if (reduced) {
+            outgoing.classList.remove('is-active');
+            incoming.classList.add('is-active');
+            index = next;
+            return;
+        }
+
+        busy = true;
+        slides.forEach((slide) => {
+            slide.classList.remove('is-leave-next', 'is-leave-prev', 'is-prep-next', 'is-prep-prev');
+        });
+        incoming.classList.add(dir > 0 ? 'is-prep-next' : 'is-prep-prev');
+        incoming.getBoundingClientRect();
+        outgoing.classList.remove('is-active');
+        outgoing.classList.add(dir > 0 ? 'is-leave-next' : 'is-leave-prev');
+        incoming.classList.remove('is-prep-next', 'is-prep-prev');
+        incoming.classList.add('is-active');
+        index = next;
+        window.setTimeout(() => {
+            outgoing.classList.remove('is-leave-next', 'is-leave-prev');
+            busy = false;
+        }, 980);
     }
     function start() {
         stop();
         if (reduced) return;
-        timer = setInterval(() => go(index + 1), 6500);
+        timer = setInterval(() => go(index + 1, 1), 6500);
     }
     function stop() {
         clearInterval(timer);
     }
 
-    root.querySelector('[data-hero-prev]')?.addEventListener('click', () => { go(index - 1); start(); });
-    root.querySelector('[data-hero-next]')?.addEventListener('click', () => { go(index + 1); start(); });
+    root.querySelector('[data-hero-prev]')?.addEventListener('click', () => { go(index - 1, -1); start(); });
+    root.querySelector('[data-hero-next]')?.addEventListener('click', () => { go(index + 1, 1); start(); });
     dots.forEach((dot) => {
         dot.addEventListener('click', () => {
             go(Number(dot.dataset.heroDot));

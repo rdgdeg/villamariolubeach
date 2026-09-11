@@ -129,26 +129,38 @@ h2 { font-size: clamp(1.7rem, 3.6vw, 3rem); }
     color: #fff; display: grid; place-items: center;
     overflow: hidden;
 }
-.hero-slides, .hero-slide, .hero-slide img {
-    position: absolute; inset: 0; width: 100%; height: 100%;
-    margin: 0;
+.hero-slides {
+    position: absolute; inset: 0;
+    overflow: hidden;
 }
 .hero-slide {
-    opacity: 0;
-    transition: opacity 1.1s ease;
+    position: absolute; inset: 0; margin: 0;
     z-index: 0;
+    transform: translate3d(100%, 0, 0);
+    transition: transform .95s cubic-bezier(.22, 1, .36, 1);
 }
-.hero-slide.is-active { opacity: 1; z-index: 1; }
+.hero-slide.is-active {
+    transform: translate3d(0, 0, 0);
+    z-index: 2;
+}
+.hero-slide.is-leave-next {
+    transform: translate3d(-100%, 0, 0);
+    z-index: 1;
+}
+.hero-slide.is-leave-prev {
+    transform: translate3d(100%, 0, 0);
+    z-index: 1;
+}
+.hero-slide.is-prep-next,
+.hero-slide.is-prep-prev {
+    transition: none;
+    z-index: 2;
+}
+.hero-slide.is-prep-next { transform: translate3d(100%, 0, 0); }
+.hero-slide.is-prep-prev { transform: translate3d(-100%, 0, 0); }
 .hero-slide img {
-    object-fit: cover; object-position: 60% 40%;
-    transform: scale(1.08);
-}
-.hero-slide.is-active img {
-    animation: kenburns 8s ease-out forwards;
-}
-@keyframes kenburns {
-    from { transform: scale(1.08) translate(0, 0); }
-    to { transform: scale(1.18) translate(-1.5%, -1%); }
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; object-position: 50% 42%;
 }
 .hero-veil {
     position: absolute; inset: 0; z-index: 2;
@@ -871,13 +883,19 @@ label.chk, .chk {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .reveal, .hero-slide, .hero-slide img, .masonry-item img,
+    .reveal, .masonry-item img,
     .points article, .place-card, .amenity-grid li, .price-frame, .steps li, .pay-card, .hero-scroll svg {
         animation: none !important;
         transition: none !important;
         transform: none !important;
         opacity: 1 !important;
     }
+    .hero-slide {
+        transition: opacity .35s ease;
+        transform: none;
+        opacity: 0;
+    }
+    .hero-slide.is-active { opacity: 1; }
 }
 
 @media (max-width: 900px) {
