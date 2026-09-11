@@ -147,6 +147,7 @@ return [
         'pending' => 'Awaiting confirmation',
         'request' => 'Awaiting confirmation',
         'unavailable' => 'Unavailable',
+        'turnover' => 'Departure day',
         'select' => 'Select your arrival date, then your departure.',
         'checkout_hint' => 'The last day (departure) is half-coloured: you leave the villa that morning.',
         'weekdays' => ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],

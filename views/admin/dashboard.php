@@ -77,8 +77,9 @@ $outstanding = (float) $stats['total'] - $paid;
                         <?php if ($b['status'] === 'pending'): ?>
                             <form method="post" action="<?= e(base_url('admin/booking/' . $b['id'])) ?>" class="inline-form">
                                 <?= Csrf::field() ?>
-                                <button type="submit" name="quick" value="confirmed">Valider</button>
-                                <button class="danger" type="submit" name="quick" value="refused">Refuser</button>
+                                <input type="hidden" name="deposit_amount" value="<?= e((string) $b['deposit_amount']) ?>">
+                                <button type="submit" name="quick" value="confirmed" data-confirm-stay data-email="<?= e((string) $b['guest_email']) ?>" data-amount="<?= e((string) $b['deposit_amount']) ?>">Valider</button>
+                                <button class="danger" type="submit" name="quick" value="refused" onclick="return confirm('Refuser cette demande et envoyer l’e-mail de refus ?');">Refuser</button>
                             </form>
                         <?php endif; ?>
                     </td>

@@ -216,6 +216,13 @@ class Database
             created_at $dt NOT NULL
         )");
 
+        $this->pdo->exec("CREATE TABLE IF NOT EXISTS booking_events (
+            id $pk,
+            booking_id INT NOT NULL,
+            event_type $text NOT NULL,
+            created_at $dt NOT NULL
+        )");
+
         $this->pdo->exec("CREATE TABLE IF NOT EXISTS email_templates (
             id $pk,
             kind $text NOT NULL,

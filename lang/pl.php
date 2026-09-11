@@ -135,6 +135,7 @@ return [
         'eyebrow' => 'Dostępność',
         'title' => 'Kiedy chcecie odkryć Sardynię?',
         'available' => 'Dostępne', 'booked' => 'Zarezerwowane', 'pending' => 'Oczekuje na potwierdzenie', 'request' => 'Oczekuje na potwierdzenie', 'unavailable' => 'Niedostępne',
+        'turnover' => 'Dzień wyjazdu',
         'select' => 'Wybierzcie najpierw przyjazd, potem wyjazd.',
         'checkout_hint' => 'Ostatni dzień (wyjazd) jest w połowie pokolorowany: willę opuszczacie rano.',
         'weekdays' => ['Pn', 'Wt', 'Śr', 'Cz', 'Pt', 'So', 'Nd'],

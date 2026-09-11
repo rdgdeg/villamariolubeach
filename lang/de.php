@@ -135,6 +135,7 @@ return [
         'eyebrow' => 'Verfügbarkeit',
         'title' => 'Wann möchten Sie Sardinien entdecken?',
         'available' => 'Verfügbar', 'booked' => 'Reserviert', 'pending' => 'Wartet auf Bestätigung', 'request' => 'Wartet auf Bestätigung', 'unavailable' => 'Nicht verfügbar',
+        'turnover' => 'Abreisetag',
         'select' => 'Wählen Sie zuerst die Anreise, dann die Abreise.',
         'checkout_hint' => 'Der letzte Tag (Abreise) ist halb eingefärbt: Sie verlassen das Haus an diesem Morgen.',
         'weekdays' => ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'],

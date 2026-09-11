@@ -5,6 +5,7 @@
     <span><i class="dot booked"></i> Réservé (confirmé)</span>
     <span><i class="dot pending"></i> En attente de validation</span>
     <span><i class="dot no"></i> Indisponible / bloqué</span>
+    <span><i class="dot turnover"></i> Jour de départ (bascule)</span>
 </div>
 
 <div class="calendar" data-calendar data-mode="block" data-months="6"></div>

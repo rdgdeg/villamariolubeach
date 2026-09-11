@@ -207,6 +207,7 @@ function handle_admin(array $segments): void
                 }
                 $sent = Mailer::sendBooking($booking, $kind);
                 BookingService::markReminded($id, $kind);
+                BookingEvents::log($id, $kind);
                 $labels = [
                     'deposit_reminder_1' => 'Relance acompte 1 envoyée par e-mail.',
                     'deposit_reminder_2' => 'Relance acompte 2 envoyée par e-mail.',
@@ -228,6 +229,7 @@ function handle_admin(array $segments): void
                     $kind = 'prearrival';
                 }
                 $sent = Mailer::sendBooking($booking, $kind);
+                BookingEvents::log($id, $kind);
                 if ($kind === 'prearrival') {
                     db()->prepare('UPDATE bookings SET prearrival_sent_at = ?, updated_at = ? WHERE id = ?')
                         ->execute([date('Y-m-d H:i:s'), date('Y-m-d H:i:s'), $id]);
@@ -253,6 +255,12 @@ function handle_admin(array $segments): void
             }
             $status = (string) (post('quick') ?: post('status'));
             $notes = (string) post('admin_notes');
+            if ($status === 'confirmed') {
+                $rawAmount = trim((string) post('deposit_amount', ''));
+                if ($rawAmount !== '') {
+                    BookingService::applyDepositAmount($id, (float) str_replace(',', '.', $rawAmount));
+                }
+            }
             if (!BookingService::setStatus($id, $status, $notes)) {
                 flash('error', 'Impossible de confirmer : dates déjà occupées.');
             } else {
@@ -261,6 +269,19 @@ function handle_admin(array $segments): void
             redirect(base_url('admin/booking/' . $id));
         }
         $title = 'Demande #' . $booking['id'];
+        $rentalNet = round((float) $booking['rental_subtotal'] - (float) $booking['discount_amount'], 2);
+        $depositAmount = (float) $booking['deposit_amount'];
+        if ($rentalNet > 0 && $depositAmount > 0) {
+            $pct = round(($depositAmount / $rentalNet) * 100, 2);
+            if (abs((float) $booking['deposit_percent'] - $pct) > 0.05) {
+                db()->prepare('UPDATE bookings SET deposit_percent = ? WHERE id = ?')
+                    ->execute([$pct, (int) $booking['id']]);
+                $booking['deposit_percent'] = $pct;
+            }
+        }
+        BookingEvents::backfill($booking);
+        $bookingEvents = BookingEvents::forBooking((int) $booking['id']);
+        $bookingStages = BookingEvents::stages($booking);
         ob_start();
         require ROOT . '/views/admin/booking.php';
         $content = ob_get_clean();
@@ -272,6 +293,11 @@ function handle_admin(array $segments): void
         if (request_method() === 'POST') {
             Csrf::requireValid();
             $form = (string) post('form');
+            if ($form === 'season_move') {
+                Pricing::moveSeason((int) post('id'), (string) post('direction'));
+                flash('success', 'Ordre des périodes mis à jour.');
+                redirect(base_url('admin/pricing'));
+            }
             if ($form === 'season_update' || $form === 'season_create') {
                 $start = parse_eu_date((string) post('start_date'));
                 $end = parse_eu_date((string) post('end_date'));
@@ -295,7 +321,7 @@ function handle_admin(array $segments): void
                     )->execute([
                         post('label'), $start['month'], $start['day'],
                         $end['month'], $end['day'], (float) post('nightly_rate'),
-                        post('is_closed') ? 1 : 0, (int) post('sort_order', 200),
+                        post('is_closed') ? 1 : 0, Pricing::nextSortOrder(),
                     ]);
                     flash('success', 'Période ajoutée.');
                 }

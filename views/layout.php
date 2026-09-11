@@ -43,6 +43,7 @@
             available: <?= json_encode(t('calendar.available')) ?>,
             request: <?= json_encode(t('calendar.request')) ?>,
             unavailable: <?= json_encode(t('calendar.unavailable')) ?>,
+            turnover: <?= json_encode(t('calendar.turnover')) ?>,
             nights: <?= json_encode(t('book.nights')) ?>,
             rental: <?= json_encode(t('book.rental')) ?>,
             discount: <?= json_encode(t('book.discount')) ?>,
@@ -147,7 +148,7 @@
         <button type="button" class="lightbox-nav lightbox-next" data-lightbox-next aria-label="<?= e(t('gallery.next')) ?>">›</button>
     </div>
     <script src="<?= e(asset('js/app.js')) ?>?v=<?= e((string) filemtime(ROOT . '/assets/js/app.js')) ?>"></script>
-    <script src="<?= e(asset('js/calendar.js')) ?>"></script>
+    <script src="<?= e(asset('js/calendar.js')) ?>?v=<?= e((string) filemtime(ROOT . '/assets/js/calendar.js')) ?>"></script>
     <script src="<?= e(asset('js/booking.js')) ?>"></script>
 </body>
 </html>

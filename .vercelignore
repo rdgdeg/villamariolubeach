@@ -1,0 +1,6 @@
+data/*.db
+data/*.db-journal
+data/auth_lock.json
+*.log
+.DS_Store
+docs

@@ -46,7 +46,7 @@ class Availability
         $seasons = Pricing::seasons();
         $start = new DateTimeImmutable($from);
         $end = new DateTimeImmutable($to);
-        $today = new DateTimeImmutable('today');
+        $today = new DateTimeImmutable('today', new DateTimeZone('Europe/Brussels'));
         $cursor = $start;
         while ($cursor < $end) {
             $key = $cursor->format('Y-m-d');
@@ -64,6 +64,28 @@ class Availability
                 }
             }
             $cursor = $cursor->modify('+1 day');
+        }
+        return $map;
+    }
+
+    /** Jour de départ : check-out exclusif, à afficher à moitié occupé. */
+    public static function turnoverMap(string $from, string $to): array
+    {
+        $stmt = db()->prepare(
+            "SELECT check_out, status FROM bookings
+             WHERE status IN ('confirmed', 'pending')
+               AND check_out >= ? AND check_out < ?"
+        );
+        $stmt->execute([$from, $to]);
+        $rank = ['booked' => 3, 'pending' => 2];
+        $map = [];
+        foreach ($stmt->fetchAll() as $row) {
+            $status = $row['status'] === 'confirmed' ? 'booked' : 'pending';
+            $key = (string) $row['check_out'];
+            $prev = $map[$key] ?? null;
+            if ($prev === null || ($rank[$status] ?? 0) >= ($rank[$prev] ?? 0)) {
+                $map[$key] = $status;
+            }
         }
         return $map;
     }
@@ -100,6 +122,7 @@ class Availability
         $start = $start->modify('first day of this month');
         $end = $start->modify('+' . $months . ' months');
         $map = self::occupiedMap($start->format('Y-m-d'), $end->format('Y-m-d'));
+        $turnovers = self::turnoverMap($start->format('Y-m-d'), $end->format('Y-m-d'));
         $occ = $withOccupancy ? self::occupancyIndex($start->format('Y-m-d'), $end->format('Y-m-d')) : [];
 
         $result = [];
@@ -115,6 +138,10 @@ class Availability
                     'day' => $d,
                     'status' => $map[$date] ?? 'available',
                 ];
+                $turnover = $turnovers[$date] ?? null;
+                if ($turnover && !in_array($day['status'], ['booked', 'pending', 'blocked'], true)) {
+                    $day['turnover'] = $turnover;
+                }
                 if ($withOccupancy) {
                     $day['booking_id'] = $info['id'] ?? null;
                     $day['guest'] = $info['guest'] ?? '';

@@ -7,6 +7,38 @@ class Pricing
         return db()->query('SELECT * FROM rate_seasons ORDER BY sort_order, id')->fetchAll();
     }
 
+    public static function nextSortOrder(): int
+    {
+        return (int) db()->query('SELECT COALESCE(MAX(sort_order), 0) FROM rate_seasons')->fetchColumn() + 10;
+    }
+
+    public static function moveSeason(int $id, string $direction): bool
+    {
+        $seasons = self::seasons();
+        $index = null;
+        foreach ($seasons as $i => $season) {
+            if ((int) $season['id'] === $id) {
+                $index = $i;
+                break;
+            }
+        }
+        if ($index === null) {
+            return false;
+        }
+        $swap = $direction === 'up' ? $index - 1 : $index + 1;
+        if (!isset($seasons[$swap])) {
+            return false;
+        }
+        $item = $seasons[$index];
+        array_splice($seasons, $index, 1);
+        array_splice($seasons, $swap, 0, [$item]);
+        $stmt = db()->prepare('UPDATE rate_seasons SET sort_order = ? WHERE id = ?');
+        foreach ($seasons as $i => $season) {
+            $stmt->execute([($i + 1) * 10, (int) $season['id']]);
+        }
+        return true;
+    }
+
     public static function discounts(): array
     {
         return db()->query('SELECT * FROM discounts ORDER BY min_nights, id')->fetchAll();
@@ -56,6 +88,30 @@ class Pricing
         }
         // Wrap around year (e.g. 20 Dec – 6 Jan)
         return $md >= $start || $md <= $end;
+    }
+
+    /** @return array{date:string,rate:float,label:string}[] */
+    public static function nightsBreakdown(string $checkIn, string $checkOut): array
+    {
+        $in = DateTimeImmutable::createFromFormat('Y-m-d', $checkIn);
+        $out = DateTimeImmutable::createFromFormat('Y-m-d', $checkOut);
+        if (!$in || !$out || $in->format('Y-m-d') !== $checkIn || $out->format('Y-m-d') !== $checkOut || $out <= $in) {
+            return [];
+        }
+        $seasons = self::seasons();
+        $nightly = [];
+        $cursor = $in;
+        while ($cursor < $out) {
+            $season = self::seasonForDate($cursor, $seasons);
+            $closed = !$season || (int) $season['is_closed'] === 1;
+            $nightly[] = [
+                'date' => $cursor->format('Y-m-d'),
+                'rate' => $closed ? 0.0 : (float) $season['nightly_rate'],
+                'label' => $closed ? 'Fermé / hors grille' : (string) $season['label'],
+            ];
+            $cursor = $cursor->modify('+1 day');
+        }
+        return $nightly;
     }
 
     public static function quote(string $checkIn, string $checkOut, ?int $ignoreBookingId = null): array

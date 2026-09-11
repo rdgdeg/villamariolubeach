@@ -135,6 +135,7 @@ return [
         'eyebrow' => 'Beschikbaarheid',
         'title' => 'Wanneer wilt u Sardinië ontdekken?',
         'available' => 'Beschikbaar', 'booked' => 'Gereserveerd', 'pending' => 'Wacht op bevestiging', 'request' => 'Wacht op bevestiging', 'unavailable' => 'Niet beschikbaar',
+        'turnover' => 'Vertrekdag',
         'select' => 'Kies eerst aankomst, daarna vertrek.',
         'checkout_hint' => 'De laatste dag (vertrek) is half gekleurd: u vertrekt die ochtend.',
         'weekdays' => ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo'],

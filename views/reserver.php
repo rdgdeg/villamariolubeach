@@ -40,6 +40,7 @@ $extras = t_arr('book.extra_items');
                             <span><i class="dot booked"></i> <?= e(t('calendar.booked')) ?></span>
                             <span><i class="dot pending"></i> <?= e(t('calendar.pending')) ?></span>
                             <span><i class="dot no"></i> <?= e(t('calendar.unavailable')) ?></span>
+                            <span><i class="dot turnover"></i> <?= e(t('calendar.turnover')) ?></span>
                         </div>
                         <p class="hint"><?= e(t('calendar.select')) ?> <?= e(t('calendar.checkout_hint')) ?></p>
                     </div>

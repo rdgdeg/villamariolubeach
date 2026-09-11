@@ -90,6 +90,20 @@
         <?php if ($msg = flash('error')): ?><p class="flash err"><?= e($msg) ?></p><?php endif; ?>
         <?= $content ?>
     </main>
+    <dialog class="stay-dialog" id="confirm-stay-dialog">
+        <form method="dialog" class="stay-dialog-card">
+            <h3>Confirmer la réservation</h3>
+            <p data-confirm-stay-copy></p>
+            <label>Montant de l’acompte (€)
+                <input type="number" min="0" step="0.01" data-confirm-stay-amount required>
+            </label>
+            <p class="hint">L’e-mail d’acompte partira avec ce montant. Modifiez-le si besoin.</p>
+            <div class="stay-dialog-actions">
+                <button value="cancel">Annuler</button>
+                <button value="ok">Confirmer et envoyer</button>
+            </div>
+        </form>
+    </dialog>
     <script>window.VMB = {
         lang: 'fr',
         admin: true,
@@ -99,10 +113,11 @@
         i18n: {
             weekdays: <?= json_encode(t_arr('calendar.weekdays')) ?>,
             months: <?= json_encode(t_arr('calendar.months')) ?>,
+            turnover: <?= json_encode(t('calendar.turnover')) ?>,
             errors: {}
         }
     };</script>
-    <script src="<?= e(asset('js/calendar.js')) ?>"></script>
+    <script src="<?= e(asset('js/calendar.js')) ?>?v=<?= e((string) filemtime(ROOT . '/assets/js/calendar.js')) ?>"></script>
     <script src="<?= e(asset('js/admin.js')) ?>?v=<?= e((string) filemtime(ROOT . '/assets/js/admin.js')) ?>"></script>
     <?php if ($mailto = flash('mailto')): ?>
         <script>window.location.href = <?= json_encode($mailto) ?>;</script>

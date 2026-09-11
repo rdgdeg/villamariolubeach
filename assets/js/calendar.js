@@ -100,6 +100,7 @@
                 for (let i = 0; i < pads; i++) days += `<span class="cal-day pad"></span>`;
                 month.days.forEach((d) => {
                     const cls = ['cal-day', d.status];
+                    if (d.turnover) cls.push('turnover', `turnover-${d.turnover}`);
                     if (start && !end && d.date === start) {
                         cls.push('start', 'in-range');
                     }
@@ -108,7 +109,8 @@
                         if (d.date === start) cls.push('start');
                         if (d.date === end) cls.push('checkout');
                     }
-                    const title = d.guest ? `${d.guest} — ${fmtDate(d.date)}` : fmtDate(d.date);
+                    let title = d.guest ? `${d.guest} — ${fmtDate(d.date)}` : fmtDate(d.date);
+                    if (d.turnover) title += ' — ' + (i18n.turnover || 'jour de départ');
                     const bookingAttr = d.booking_id ? ` data-booking="${d.booking_id}"` : '';
                     days += `<button type="button" class="${cls.join(' ')}" data-date="${d.date}"${bookingAttr} title="${escAttr(title)}" aria-label="${escAttr(title)}">${d.day}</button>`;
                 });

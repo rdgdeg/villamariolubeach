@@ -5,11 +5,44 @@ function e(?string $value): string
     return htmlspecialchars((string) $value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
+function env_val(string $key, string $default = ''): string
+{
+    $value = getenv($key);
+    return ($value === false || $value === '') ? $default : $value;
+}
+
+function load_app_config(): array
+{
+    $file = ROOT . '/config.php';
+    if (is_file($file)) {
+        $loaded = require $file;
+        if (is_array($loaded)) {
+            return $loaded;
+        }
+    }
+    $tmp = sys_get_temp_dir() . '/villamariolu.db';
+    return [
+        'driver' => env_val('DB_DRIVER', 'sqlite'),
+        'mysql' => [
+            'host' => env_val('DB_HOST', 'localhost'),
+            'name' => env_val('DB_NAME', ''),
+            'user' => env_val('DB_USER', ''),
+            'pass' => env_val('DB_PASS', ''),
+            'charset' => 'utf8mb4',
+        ],
+        'sqlite_path' => env_val('SQLITE_PATH', $tmp),
+        'base_url' => env_val('BASE_URL', ''),
+        'default_lang' => env_val('DEFAULT_LANG', 'en'),
+        'admin_user' => env_val('ADMIN_USER', 'admin'),
+        'admin_password' => env_val('ADMIN_PASSWORD', 'VillaMariolu2027'),
+    ];
+}
+
 function config(?string $key = null, $default = null)
 {
     static $config;
     if ($config === null) {
-        $config = require ROOT . '/config.php';
+        $config = load_app_config();
     }
     if ($key === null) {
         return $config;
@@ -34,7 +67,8 @@ function base_url(string $path = ''): string
             $base = $configured;
         } else {
             $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
-                || ((int) ($_SERVER['SERVER_PORT'] ?? 80) === 443);
+                || ((int) ($_SERVER['SERVER_PORT'] ?? 80) === 443)
+                || strtolower((string) ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')) === 'https';
             $scheme = $https ? 'https' : 'http';
             $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
             $script = dirname($_SERVER['SCRIPT_NAME'] ?? '');
@@ -99,11 +133,13 @@ function format_date(?string $value, bool $withTime = false): string
     if ($value === '') {
         return '';
     }
-    $dt = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $value)
-        ?: DateTimeImmutable::createFromFormat('Y-m-d', substr($value, 0, 10));
+    $tz = new DateTimeZone('Europe/Brussels');
+    $dt = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $value, $tz)
+        ?: DateTimeImmutable::createFromFormat('Y-m-d', substr($value, 0, 10), $tz);
     if (!$dt) {
         return $value;
     }
+    $dt = $dt->setTimezone($tz);
     return $withTime ? $dt->format('d/m/Y H:i') : $dt->format('d/m/Y');
 }
 

@@ -362,6 +362,7 @@ foreach ($seasons as $s) {
             <span><i class="dot booked"></i> <?= e(t('calendar.booked')) ?></span>
             <span><i class="dot pending"></i> <?= e(t('calendar.pending')) ?></span>
             <span><i class="dot no"></i> <?= e(t('calendar.unavailable')) ?></span>
+            <span><i class="dot turnover"></i> <?= e(t('calendar.turnover')) ?></span>
         </div>
         <p class="center"><a class="btn btn-terracotta" href="<?= e(url_for('reserver')) ?>"><?= e(t('hero.cta')) ?></a></p>
     </div>

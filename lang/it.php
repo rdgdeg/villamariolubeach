@@ -135,6 +135,7 @@ return [
         'eyebrow' => 'Disponibilità',
         'title' => 'Quando volete scoprire la Sardegna?',
         'available' => 'Disponibile', 'booked' => 'Prenotato', 'pending' => 'In attesa di conferma', 'request' => 'In attesa di conferma', 'unavailable' => 'Non disponibile',
+        'turnover' => 'Giorno di partenza',
         'select' => 'Selezionate l’arrivo e poi la partenza.',
         'checkout_hint' => 'L’ultimo giorno (partenza) è colorato a metà: lasciate la villa quella mattina.',
         'weekdays' => ['Lu', 'Ma', 'Me', 'Gi', 'Ve', 'Sa', 'Do'],

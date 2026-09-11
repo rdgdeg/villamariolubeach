@@ -90,6 +90,7 @@ class BookingService
         $id = (int) db()->lastInsertId();
         $booking = self::find($id);
         if ($booking) {
+            BookingEvents::log($id, 'request');
             Mailer::sendBooking($booking, 'request');
             Mailer::notifyHostNewRequest($booking);
         }
@@ -138,6 +139,7 @@ class BookingService
         $stmt->execute([$status, $notes !== '' ? $notes : $booking['admin_notes'], date('Y-m-d H:i:s'), $id]);
         $fresh = self::find($id);
         if ($fresh && $status !== $booking['status']) {
+            BookingEvents::log($id, $status);
             if ($status === 'confirmed') {
                 Mailer::sendBooking($fresh, 'confirmed');
             } elseif ($status === 'refused') {
@@ -207,10 +209,18 @@ class BookingService
         $fresh = self::find($id);
         if ($fresh) {
             if ($depositPaid && empty($booking['deposit_paid'])) {
+                BookingEvents::log($id, 'deposit_paid');
                 Mailer::sendBooking($fresh, 'deposit_paid');
             }
+            if (!$depositPaid && !empty($booking['deposit_paid'])) {
+                BookingEvents::log($id, 'deposit_unpaid');
+            }
             if ($balancePaid && empty($booking['balance_paid'])) {
+                BookingEvents::log($id, 'balance_paid');
                 Mailer::sendBooking($fresh, 'balance_paid');
+            }
+            if (!$balancePaid && !empty($booking['balance_paid'])) {
+                BookingEvents::log($id, 'balance_unpaid');
             }
         }
         return ['ok' => true];
@@ -227,6 +237,21 @@ class BookingService
         return true;
     }
 
+    public static function applyDepositAmount(int $id, float $amount): bool
+    {
+        $booking = self::find($id);
+        if (!$booking) {
+            return false;
+        }
+        $rental = round((float) $booking['rental_subtotal'] - (float) $booking['discount_amount'], 2);
+        $amount = round(max(0, $amount), 2);
+        $percent = $rental > 0 ? round(($amount / $rental) * 100, 2) : 0.0;
+        db()->prepare(
+            'UPDATE bookings SET deposit_amount = ?, deposit_percent = ?, updated_at = ? WHERE id = ?'
+        )->execute([$amount, $percent, date('Y-m-d H:i:s'), $id]);
+        return true;
+    }
+
     public static function markReminded(int $id, string $kind): bool
     {
         $col = str_starts_with($kind, 'balance') ? 'balance_reminded_at' : 'deposit_reminded_at';
@@ -235,23 +260,44 @@ class BookingService
         return true;
     }
 
+    /** Le % s’applique à la location (après réduction, hors nettoyage). */
     /** @return array{deposit_percent:float,deposit_amount:float} */
     public static function resolveDeposit(float $total, array $input, array $quote): array
     {
+        $rental = (float) ($quote['rental'] ?? 0);
+        if ($rental <= 0) {
+            $rental = round($total - (float) ($quote['cleaning_fee'] ?? 0), 2);
+        }
         $amountRaw = trim((string) ($input['deposit_amount'] ?? ''));
         $percentRaw = trim((string) ($input['deposit_percent'] ?? ''));
         $amount = $amountRaw !== '' ? (float) str_replace(',', '.', $amountRaw) : 0.0;
         $percent = $percentRaw !== '' ? (float) str_replace(',', '.', $percentRaw) : 0.0;
-        if ($amount > 0) {
+        $source = (string) ($input['deposit_source'] ?? '');
+        if ($source === 'percent' && $percent > 0) {
             return [
-                'deposit_percent' => $total > 0 ? round(($amount / $total) * 100, 2) : 0.0,
+                'deposit_percent' => $percent,
+                'deposit_amount' => round($rental * $percent / 100, 2),
+            ];
+        }
+        if ($source === 'amount' && $amount > 0) {
+            return [
+                'deposit_percent' => $rental > 0 ? round(($amount / $rental) * 100, 2) : 0.0,
                 'deposit_amount' => round($amount, 2),
             ];
         }
         if ($percent > 0) {
+            $fromPercent = round($rental * $percent / 100, 2);
+            if ($amount <= 0 || abs($amount - $fromPercent) < 0.05) {
+                return [
+                    'deposit_percent' => $percent,
+                    'deposit_amount' => $fromPercent,
+                ];
+            }
+        }
+        if ($amount > 0) {
             return [
-                'deposit_percent' => $percent,
-                'deposit_amount' => round($total * $percent / 100, 2),
+                'deposit_percent' => $rental > 0 ? round(($amount / $rental) * 100, 2) : 0.0,
+                'deposit_amount' => round($amount, 2),
             ];
         }
         return [

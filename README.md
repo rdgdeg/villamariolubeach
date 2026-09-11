@@ -36,6 +36,20 @@ php -S localhost:8080 router.php
 
 Le fichier `config.php` du projet est en SQLite pour le développement local.
 
+## Déploiement Vercel
+
+Vercel n’exécute pas PHP tout seul : sans runtime, le navigateur **télécharge** `index.php`. Ce dépôt contient `vercel.json` (runtime `vercel-php`) pour que le site s’affiche.
+
+1. Importez le dépôt GitHub dans Vercel.
+2. Laissez les réglages par défaut (le `vercel.json` suffit).
+3. Optionnel, variables d’environnement si vous avez une base MySQL :
+   - `DB_DRIVER=mysql`
+   - `DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASS`
+   - `BASE_URL=https://votre-domaine.vercel.app`
+   - `ADMIN_PASSWORD=...`
+
+Sans MySQL, Vercel utilise SQLite temporaire (`/tmp`) : le site s’affiche, mais les données peuvent être perdues à chaque redémarrage. Pour la production durable, préférez **O2switch** avec MySQL.
+
 ## Parcours client
 
 Le visiteur choisit des dates sur le calendrier, voit le prix (nuitées + réduction + nettoyage + acompte 10 % + caution), puis envoie une **demande**. L’hôte confirme dans l’admin, ce qui bloque les dates.

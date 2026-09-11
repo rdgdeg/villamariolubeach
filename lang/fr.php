@@ -176,6 +176,7 @@ return [
         'pending' => 'En attente de validation',
         'request' => 'En attente de validation',
         'unavailable' => 'Indisponible',
+        'turnover' => 'Jour de départ',
         'select' => 'Sélectionnez votre arrivée puis votre départ.',
         'checkout_hint' => 'Le dernier jour (départ) est coloré à moitié : vous quittez la villa ce matin-là.',
         'weekdays' => ['Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa', 'Di'],
