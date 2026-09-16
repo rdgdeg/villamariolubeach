@@ -52,4 +52,4 @@ Sans MySQL, Vercel utilise SQLite temporaire (`/tmp`) : le site s’affiche, mai
 
 ## Parcours client
 
-Le visiteur choisit des dates sur le calendrier, voit le prix (nuitées + réduction + nettoyage + acompte 10 % + caution), puis envoie une **demande**. L’hôte confirme dans l’admin, ce qui bloque les dates.
+Le visiteur choisit des dates sur le calendrier, voit le prix (nuitées + réduction + nettoyage + acompte 15 % + caution), puis envoie une **demande**. L’hôte confirme dans l’admin, ce qui bloque les dates.

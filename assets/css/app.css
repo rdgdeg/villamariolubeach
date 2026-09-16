@@ -543,6 +543,20 @@ h2 { font-size: clamp(1.7rem, 3.6vw, 3rem); }
     background: var(--sea-deep); color: #fff; padding: 5rem 0; text-align: center;
 }
 .reviews-inner { max-width: 720px; margin-inline: auto; }
+.reviews .eyebrow {
+    font-size: clamp(1.85rem, 4.6vw, 3.15rem);
+    font-weight: 800;
+    letter-spacing: .04em;
+    text-transform: none;
+    color: #fff;
+    font-family: var(--display);
+    margin-bottom: .45rem;
+}
+.reviews h2 {
+    font-size: clamp(1.15rem, 2.2vw, 1.55rem);
+    font-weight: 500;
+    color: var(--foam);
+}
 .reviews .lead { margin-inline: auto; color: var(--foam); font-weight: 400; }
 .rating { font-size: 1.4rem; color: var(--gold); }
 .badge-line { opacity: .8; }
@@ -579,7 +593,17 @@ h2 { font-size: clamp(1.7rem, 3.6vw, 3rem); }
     box-shadow: var(--shadow);
     overflow: hidden;
 }
-.rate-table { width: 100%; border-collapse: collapse; }
+.prices-layout > .price-frame {
+    min-width: 0;
+    max-width: 100%;
+}
+.rate-table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    max-width: 100%;
+}
+.rate-table { width: 100%; min-width: 38rem; border-collapse: collapse; }
 .rate-table th, .rate-table td {
     text-align: left;
     padding: .78rem .85rem;

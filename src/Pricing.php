@@ -173,7 +173,7 @@ class Pricing
         $cleaning = (float) setting('cleaning_fee', 100);
         $caution = (float) setting('caution', 300);
         $total = round($rental + $cleaning, 2);
-        $depositPercent = (float) setting('deposit_percent', 20);
+        $depositPercent = (float) setting('deposit_percent', 15);
         $deposit = round($rental * $depositPercent / 100, 2);
 
         return [

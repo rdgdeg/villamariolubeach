@@ -143,8 +143,8 @@ class EmailTemplates
             'check_out' => '2027-07-17',
             'nights' => 7,
             'total' => 2100,
-            'deposit_amount' => 420,
-            'deposit_percent' => 20,
+            'deposit_amount' => 315,
+            'deposit_percent' => 15,
             'caution' => (float) setting('caution', 300),
         ];
     }
@@ -154,7 +154,7 @@ class EmailTemplates
     {
         $percent = (float) ($booking['deposit_percent'] ?? 0);
         if ($percent <= 0) {
-            $percent = (float) setting('deposit_percent', 20);
+            $percent = (float) setting('deposit_percent', 15);
         }
         $deposit = (float) ($booking['deposit_amount'] ?? 0);
         $total = (float) ($booking['total'] ?? 0);

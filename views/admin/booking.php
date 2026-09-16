@@ -19,7 +19,7 @@ $balance = (float) $booking['total'] - (float) $booking['deposit_amount'];
 $letter = StayCopy::paymentLetter($booking);
 $depositPercent = (float) ($booking['deposit_percent'] ?? 0);
 if ($depositPercent <= 0) {
-    $depositPercent = (float) setting('deposit_percent', 20);
+    $depositPercent = (float) setting('deposit_percent', 15);
 }
 $nights = 0;
 try {

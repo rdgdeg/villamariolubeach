@@ -295,7 +295,8 @@ foreach ($seasons as $s) {
         </div>
         <div class="prices-layout">
             <div class="price-frame">
-                <table class="rate-table">
+                <div class="rate-table-scroll">
+                    <table class="rate-table">
                     <thead>
                         <tr>
                             <th><?= e(t('prices.period')) ?></th>
@@ -326,7 +327,8 @@ foreach ($seasons as $s) {
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
-                </table>
+                    </table>
+                </div>
             </div>
             <aside class="price-frame price-side">
                 <h3><?= e(t('prices.discounts_title')) ?></h3>
@@ -384,23 +386,7 @@ foreach ($seasons as $s) {
     </div>
 </section>
 
-<section class="section sand reveal" id="paiement">
-    <div class="wrap split">
-        <div>
-            <p class="eyebrow"><?= e(t('payment.eyebrow')) ?></p>
-            <h2><?= e(t('payment.title')) ?></h2>
-            <p><?= e(t('payment.card')) ?></p>
-            <p><?= e(t('payment.transfer')) ?></p>
-            <p class="muted"><?= e(t('payment.note')) ?></p>
-        </div>
-        <div class="pay-cards">
-            <div class="pay-card">Visa / Mastercard</div>
-            <div class="pay-card">Virement</div>
-        </div>
-    </div>
-</section>
-
-<section class="section reveal" id="faq">
+<section class="section sand reveal" id="faq">
     <div class="wrap narrow">
         <p class="eyebrow"><?= e(t('faq.eyebrow')) ?></p>
         <h2><?= e(t('faq.title')) ?></h2>

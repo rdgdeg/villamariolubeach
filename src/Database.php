@@ -298,7 +298,7 @@ class Database
         $defaults = [
             'cleaning_fee' => '100',
             'caution' => '300',
-            'deposit_percent' => '20',
+            'deposit_percent' => '15',
             'min_nights' => '6',
             'max_nights' => '21',
             'cin' => 'IT090091C2000S5635',
@@ -334,8 +334,8 @@ class Database
 
         $this->ensureOwnerRates();
         $this->ensureFivePercentDiscount();
-        $this->pdo->prepare('UPDATE settings SET setting_value = ? WHERE setting_key = ? AND setting_value = ?')
-            ->execute(['20', 'deposit_percent', '10']);
+        $this->pdo->prepare('UPDATE settings SET setting_value = ? WHERE setting_key = ? AND setting_value IN (?, ?)')
+            ->execute(['15', 'deposit_percent', '10', '20']);
     }
 
     private static function ownerRateRows(): array
@@ -402,6 +402,6 @@ class Database
             'setting_value' => '2027-owner',
         ]);
         $this->pdo->prepare('UPDATE settings SET setting_value = ? WHERE setting_key = ?')
-            ->execute(['20', 'deposit_percent']);
+            ->execute(['15', 'deposit_percent']);
     }
 }

@@ -300,7 +300,7 @@ class BookingService
             ];
         }
         return [
-            'deposit_percent' => (float) ($quote['deposit_percent'] ?? setting('deposit_percent', 20)),
+            'deposit_percent' => (float) ($quote['deposit_percent'] ?? setting('deposit_percent', 15)),
             'deposit_amount' => round((float) ($quote['deposit_amount'] ?? 0), 2),
         ];
     }
