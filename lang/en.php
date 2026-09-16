@@ -126,9 +126,10 @@ return [
         'title' => 'A clear price, no surprises.',
         'text' => 'Price per night excluding paid extras. Stays from 6 to 21 nights.',
         'period' => 'Period', 'night' => 'Rate / night', 'closed' => 'Closed', 'from' => 'from',
-        'col_6' => '6 nights (−5%)', 'col_10' => '10 nights (−10%)', 'col_14' => '14 nights (−20%)',
+        'grid_group' => 'Rate from 6 nights (5%) — 10 nights (10%) — 15 nights (15%)',
+        'col_6' => '6 nights', 'col_10' => '10 nights', 'col_15' => '15 nights',
         'discounts_title' => 'Long-stay discounts',
-        'd1' => '6 nights → −5%', 'd2' => '10 nights → −10%', 'd3' => '14 nights → −20%',
+        'd1' => '6 to 9 nights → −5%', 'd2' => '10 to 14 nights → −10%', 'd3' => '15 to 21 nights → −15%',
         'min' => 'Minimum stay: 6 nights · maximum: 21 nights',
         'included_title' => 'Services included',
         'included' => [

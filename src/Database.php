@@ -341,17 +341,22 @@ class Database
     private static function ownerRateRows(): array
     {
         return [
-            ['Janvier', 1, 1, 1, 31, 350, 0, 10],
-            ['Février / Mars', 2, 1, 3, 31, 0, 1, 20],
-            ['Avril', 4, 1, 4, 30, 290, 0, 30],
-            ['Mai', 5, 1, 5, 31, 290, 0, 40],
-            ['Juin', 6, 1, 6, 30, 350, 0, 50],
-            ['Juillet', 7, 1, 7, 31, 400, 0, 60],
-            ['Août', 8, 1, 8, 31, 400, 0, 70],
-            ['Septembre', 9, 1, 9, 30, 350, 0, 80],
-            ['Octobre', 10, 1, 10, 31, 290, 0, 90],
-            ['Novembre', 11, 1, 11, 30, 250, 0, 100],
-            ['Décembre', 12, 1, 12, 31, 350, 0, 110],
+            ['Avril 1–15', 4, 1, 4, 15, 250, 0, 10],
+            ['Avril 16–30', 4, 16, 4, 30, 275, 0, 20],
+            ['Mai', 5, 1, 5, 31, 300, 0, 30],
+            ['Juin 1–15', 6, 1, 6, 15, 325, 0, 40],
+            ['Juin 16–30', 6, 16, 6, 30, 375, 0, 50],
+            ['Juillet 1–15', 7, 1, 7, 15, 400, 0, 60],
+            ['Juillet 16–31', 7, 16, 7, 31, 425, 0, 70],
+            ['Août 1–15', 8, 1, 8, 15, 450, 0, 80],
+            ['Août 16–31', 8, 16, 8, 31, 400, 0, 90],
+            ['Septembre', 9, 1, 9, 30, 350, 0, 100],
+            ['Octobre 1–15', 10, 1, 10, 15, 290, 0, 110],
+            ['Octobre 16–31', 10, 16, 10, 31, 250, 0, 120],
+            ['Novembre', 11, 1, 11, 30, 250, 0, 130],
+            ['Décembre / Janvier', 12, 1, 1, 31, 200, 0, 140],
+            ['Noël / Nouvel An', 12, 20, 1, 6, 325, 0, 150],
+            ['Février / Mars', 2, 1, 3, 31, 0, 1, 160],
         ];
     }
 
@@ -359,8 +364,8 @@ class Database
     {
         $stmt = $this->pdo->prepare('INSERT INTO discounts (min_nights, max_nights, percent) VALUES (?, ?, ?)');
         $stmt->execute([6, 9, 5]);
-        $stmt->execute([10, 13, 10]);
-        $stmt->execute([14, 21, 20]);
+        $stmt->execute([10, 14, 10]);
+        $stmt->execute([15, 21, 15]);
     }
 
     private function ensureFivePercentDiscount(): void
@@ -380,7 +385,7 @@ class Database
         $flag = $this->pdo->prepare('SELECT setting_value FROM settings WHERE setting_key = ?');
         $flag->execute(['rates_pack']);
         $pack = $flag->fetchColumn();
-        if ($pack === '2027-owner') {
+        if ($pack === '2027-grille-docx') {
             $seasons = (int) $this->pdo->query('SELECT COUNT(*) FROM rate_seasons')->fetchColumn();
             $discounts = (int) $this->pdo->query('SELECT COUNT(*) FROM discounts')->fetchColumn();
             if ($seasons > 0 && $discounts > 0) {
@@ -399,7 +404,7 @@ class Database
         $this->insertOwnerDiscounts();
         $this->upsert('settings', 'setting_key', [
             'setting_key' => 'rates_pack',
-            'setting_value' => '2027-owner',
+            'setting_value' => '2027-grille-docx',
         ]);
         $this->pdo->prepare('UPDATE settings SET setting_value = ? WHERE setting_key = ?')
             ->execute(['15', 'deposit_percent']);

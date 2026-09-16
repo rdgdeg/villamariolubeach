@@ -70,10 +70,15 @@ class Pricing
             }
         }
         foreach ([$yearSpecific, $recurring] as $pool) {
+            $matches = [];
             foreach ($pool as $season) {
                 if (self::dateInSeason($md, $season)) {
-                    return $season;
+                    $matches[] = $season;
                 }
+            }
+            if ($matches) {
+                usort($matches, static fn (array $a, array $b): int => self::seasonLength($a) <=> self::seasonLength($b));
+                return $matches[0];
             }
         }
         return null;
@@ -88,6 +93,19 @@ class Pricing
         }
         // Wrap around year (e.g. 20 Dec – 6 Jan)
         return $md >= $start || $md <= $end;
+    }
+
+    private static function seasonLength(array $season): int
+    {
+        $start = DateTimeImmutable::createFromFormat('!n-j', (int) $season['start_month'] . '-' . (int) $season['start_day']);
+        $end = DateTimeImmutable::createFromFormat('!n-j', (int) $season['end_month'] . '-' . (int) $season['end_day']);
+        if (!$start || !$end) {
+            return 999;
+        }
+        if ($end < $start) {
+            $end = $end->modify('+1 year');
+        }
+        return (int) $start->diff($end)->days + 1;
     }
 
     /** @return array{date:string,rate:float,label:string}[] */

@@ -317,30 +317,31 @@ foreach ($seasons as $s) {
                     <table class="rate-table">
                     <thead>
                         <tr>
-                            <th><?= e(t('prices.period')) ?></th>
-                            <th class="num"><?= e(t('prices.night')) ?></th>
+                            <th rowspan="2"><?= e(t('prices.period')) ?></th>
+                            <th class="num group" colspan="3"><?= e(t('prices.grid_group')) ?></th>
+                        </tr>
+                        <tr>
                             <th class="num"><?= e(t('prices.col_6')) ?></th>
                             <th class="num"><?= e(t('prices.col_10')) ?></th>
-                            <th class="num"><?= e(t('prices.col_14')) ?></th>
+                            <th class="num"><?= e(t('prices.col_15')) ?></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
                         $off6 = Pricing::discountPercentForNights(6);
                         $off10 = Pricing::discountPercentForNights(10);
-                        $off14 = Pricing::discountPercentForNights(14);
+                        $off15 = Pricing::discountPercentForNights(15);
                         ?>
                         <?php foreach ($seasons as $s): ?>
                             <?php $closed = (int) $s['is_closed']; $rate = (float) $s['nightly_rate']; ?>
                             <tr class="<?= $closed ? 'is-closed' : '' ?>">
                                 <td><?= e($s['label']) ?></td>
                                 <?php if ($closed): ?>
-                                    <td class="num" colspan="4"><?= e(t('prices.closed')) ?></td>
+                                    <td class="num" colspan="3"><?= e(t('prices.closed')) ?></td>
                                 <?php else: ?>
-                                    <td class="num"><?= e(money($rate)) ?></td>
                                     <td class="num"><?= e(money(round($rate * (1 - $off6 / 100)))) ?></td>
                                     <td class="num"><?= e(money(round($rate * (1 - $off10 / 100)))) ?></td>
-                                    <td class="num"><?= e(money(round($rate * (1 - $off14 / 100)))) ?></td>
+                                    <td class="num"><?= e(money(round($rate * (1 - $off15 / 100)))) ?></td>
                                 <?php endif; ?>
                             </tr>
                         <?php endforeach; ?>
