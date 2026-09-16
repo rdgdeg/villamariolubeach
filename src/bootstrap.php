@@ -28,3 +28,4 @@ require ROOT . '/src/Seo.php';
 require ROOT . '/src/Backup.php';
 
 db();
+EmailTemplates::ensureLatestCopy();

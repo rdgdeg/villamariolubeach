@@ -5,6 +5,7 @@ $amenities = t_arr('amenities.grid');
 $amenityOrder = [
     'air-conditioning', 'free-wifi', 'covered-terrace', 'dish-washer', 'washing-machine', 'private-parking',
     'outside-shower', 'barbecue', 'television', 'hair-dryer', 'vacuum-cleaner', 'coffee-machine',
+    'ironing-board', 'beach-lounger', 'beach-umbrella', 'safe',
 ];
 $factIcons = [
     ['2-6-persons', 'facts.guests'],
@@ -44,15 +45,22 @@ $restaurants = [
     ['La Shardana', '150 m'],
     ['La Volpe', '950 m'],
     ['Pizzeria da Paolo', '1 km'],
+    ['Pedra Niedda', '1 km'],
+    ['Pomodoro Rosso', '1,2 km'],
     ['Ristorante Lu Nibaru', '—'],
 ];
 $beaches = [
     ['Spiaggia Punta Sant’Anna', '250 m'],
-    ['Spiaggia Capannizza', '500 m'],
+    ['Spiaggia Capannizza', '350 m'],
     ['Spiaggia di Porto Ainu', '1 km'],
     ['Baia Sant’Anna', '2,5 km'],
     ['Plage de Budoni', '2,5 km'],
     ['Spiaggia e pineta Salmaghe', '3,3 km'],
+];
+$shops = [
+    ['Farmacia Donedu', '1,1 km'],
+    ['Despar', '1 km'],
+    ['Alessandro & Gessica', '1 km'],
 ];
 $minRate = 9999;
 foreach ($seasons as $s) {
@@ -73,6 +81,7 @@ foreach ($seasons as $s) {
     <div class="hero-content wrap">
         <p class="kicker gold"><?= e(t('hero.kicker')) ?></p>
         <h1><?= e(t('hero.title')) ?></h1>
+        <p class="hero-ids"><?= e(t('hero.ids')) ?></p>
         <p class="hero-sub"><?= e(t('hero.subtitle')) ?></p>
         <p class="hero-lead"><?= e(t('hero.lead')) ?></p>
         <p class="hero-chips"><?= e(t('hero.chips')) ?></p>
@@ -111,11 +120,11 @@ foreach ($seasons as $s) {
         <div class="villa-copy">
             <p class="eyebrow"><?= e(t('villa.eyebrow')) ?></p>
             <h2><?= e(t('villa.title')) ?></h2>
-            <p class="lead"><?= e(t('villa.text')) ?></p>
+            <p class="lead"><?= highlight_villa_name(t('villa.text')) ?></p>
         </div>
         <div class="villa-photos">
+            <img src="<?= e(asset('img/hero/sea-view.jpg')) ?>" alt="Villa Mariolu Beach, vue mer">
             <img src="<?= e(asset('img/gallery/bedroom.jpg')) ?>" alt="Chambre double de la villa">
-            <img src="<?= e(asset('img/gallery/bathroom.jpg')) ?>" alt="Salle de bain de la villa">
         </div>
     </div>
     <div class="wrap points">
@@ -182,6 +191,7 @@ foreach ($seasons as $s) {
         <p><?= e(t('hosts.p3')) ?></p>
         <p><?= e(t('hosts.p4')) ?></p>
         <p class="sign"><?= e(t('hosts.sign')) ?></p>
+        <p class="hosts-owners"><?= e(t('hosts.owners')) ?></p>
     </div>
 </section>
 
@@ -213,6 +223,14 @@ foreach ($seasons as $s) {
                 <h3><?= e(t('location.beaches')) ?></h3>
                 <ul>
                     <?php foreach ($beaches as [$n, $d]): ?>
+                        <li><span><?= e($n) ?></span><span><?= e($d) ?></span></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+            <div>
+                <h3><?= e(t('location.shops')) ?></h3>
+                <ul>
+                    <?php foreach ($shops as [$n, $d]): ?>
                         <li><span><?= e($n) ?></span><span><?= e($d) ?></span></li>
                     <?php endforeach; ?>
                 </ul>
@@ -264,7 +282,7 @@ foreach ($seasons as $s) {
                 <li><?= e($item) ?></li>
             <?php endforeach; ?>
         </ul>
-        <p class="cin">CIN <?= e(setting('cin')) ?> · IUN <?= e(setting('iun')) ?></p>
+        <p class="cin"><strong>CIN <?= e(setting('cin')) ?> · IUN <?= e(setting('iun')) ?></strong></p>
     </div>
 </section>
 
@@ -347,7 +365,6 @@ foreach ($seasons as $s) {
                         </li>
                     <?php endforeach; ?>
                 </ul>
-                <?php require ROOT . '/views/partials/stay-rules.php'; ?>
             </aside>
         </div>
     </div>

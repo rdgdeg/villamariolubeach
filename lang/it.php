@@ -20,6 +20,7 @@ return [
         'subtitle' => 'Il vostro angolo di Sardegna, tra mare, natura e dolce far niente.',
         'lead' => 'A pochi minuti a piedi dalla spiaggia, una villa privata al calmo, con vista mare, terrazza, giardino e tutto il comfort per vivere la Sardegna al vostro ritmo.',
         'chips' => 'Villa privata a 5 minuti dalla spiaggia · Vista mare · Parcheggio privato · 2-6 persone',
+        'ids' => 'Codice I.U.N. : S5635 / CIN : IT090091C2000S5635',
         'cta' => 'Verifica disponibilità',
         'scroll' => 'Scopri la villa',
     ],
@@ -28,7 +29,7 @@ return [
         'children' => 'Bambini', 'submit' => 'Vedi il prezzo', 'hint' => 'Soggiorno minimo: 6 notti',
     ],
     'facts' => [
-        'guests' => '2 – 6 persone', 'bedrooms' => '2 camere', 'bathroom' => '1 bagno',
+        'guests' => '2 – 6 persone', 'bedrooms' => '2 camere + divano letto', 'bathroom' => '1 bagno',
         'beach' => 'Spiaggia a 5 min a piedi', 'ac' => 'Aria condizionata', 'parking' => 'Parcheggio privato',
     ],
     'villa' => [
@@ -59,6 +60,10 @@ return [
             'hair-dryer' => 'Asciugacapelli',
             'vacuum-cleaner' => 'Aspirapolvere',
             'coffee-machine' => 'Macchina del caffè',
+            'ironing-board' => 'Asse da stiro',
+            'beach-lounger' => 'Lettino',
+            'beach-umbrella' => 'Ombrellone',
+            'safe' => 'Cassaforte',
         ],
     ],
     'gallery' => [
@@ -79,6 +84,7 @@ return [
         'p3' => 'Un caffè in terrazza sul mare, una giornata in spiaggia, una passeggiata al tramonto… poi riposo, tranquillità e un po’ di farniente.',
         'p4' => 'Villa Mariolu Beach è il nostro piccolo pezzo di Sardegna, che siamo felici di condividere con voi.',
         'sign' => 'Benvenuti, e buona vacanza!',
+        'owners' => 'Concetto & Cinzia — Proprietari',
     ],
     'location' => [
         'eyebrow' => 'Budoni e la posizione',
@@ -89,6 +95,7 @@ return [
         'map_cta' => 'Apri in Google Maps',
         'restaurants' => 'Ristoranti e caffè',
         'beaches' => 'Spiagge vicine',
+        'shops' => 'Negozi',
         'discover' => 'Da scoprire',
         'places' => [
             ['title' => 'Cala Brandinchi', 'text' => 'Acqua cristallina e sabbia bianca, a pochi minuti in auto.'],
@@ -133,7 +140,7 @@ return [
     ],
     'calendar' => [
         'eyebrow' => 'Disponibilità',
-        'title' => 'Quando volete scoprire la Sardegna?',
+        'title' => 'Calendario disponibilità/prenotazioni',
         'available' => 'Disponibile', 'booked' => 'Prenotato', 'pending' => 'In attesa di conferma', 'request' => 'In attesa di conferma', 'unavailable' => 'Non disponibile',
         'turnover' => 'Giorno di partenza',
         'select' => 'Selezionate l’arrivo e poi la partenza.',
@@ -254,15 +261,22 @@ return [
     'paymail' => [
         'hello' => 'Buongiorno,',
         'thanks' => 'Grazie per la prenotazione della Villa Mariolu Beach in Sardegna.',
-        'deposit' => 'Vi preghiamo di versare l’acconto del :p% (:amount) per confermare la villa per le vostre vacanze.',
-        'two_months' => 'Due mesi prima dell’arrivo riceverete un’e-mail con i dettagli dell’appuntamento, la persona di contatto (staff) e il luogo di incontro.',
+        'deposit' => 'Vi preghiamo di versare l’acconto del :p% (:amount) entro 48 ore per confermare la villa per le vostre vacanze.',
+        'deposit_unpaid' => 'Se l’acconto non viene versato entro questo termine, il periodo di prenotazione tornerà libero.',
+        'two_months' => 'Due mesi prima dell’arrivo, vi preghiamo di versare il saldo. Non appena ricevuto, invieremo un’e-mail con tutte le informazioni per il check-in, i recapiti del nostro staff e il luogo di incontro.',
         'bank_title' => 'Coordinate bancarie:',
         'holder' => 'Intestatario:',
         'reference' => 'Causale:',
         'sign' => "Cordiali saluti,\n\nA presto!\nConcetto & Cinzia",
         'subject_deposit' => 'Villa Mariolu Beach — acconto da versare',
         'subject_balance' => 'Villa Mariolu Beach — saldo da pagare',
-        'balance_intro' => 'Il saldo del soggiorno è ora dovuto: :amount. Usate la stessa causale del bonifico.',
+        'balance_soon' => 'Siamo a 2 mesi dalle vostre vacanze!',
+        'balance_intro' => 'Il saldo del soggiorno è ora dovuto: :amount. Effettuate il bonifico con la stessa causale e inviateci la prova di pagamento.',
+        'hello_name' => 'Buongiorno :name,',
+        'dates_line' => 'Date: :dates.',
+        'subject_request' => 'Villa Mariolu Beach — la vostra richiesta di prenotazione',
+        'request_thanks' => 'Abbiamo ricevuto la vostra richiesta di prenotazione per Villa Mariolu Beach per le date :dates.',
+        'request_wait' => 'Verifichiamo la disponibilità e vi ricontattiamo al più presto, prima di qualsiasi pagamento.',
     ],
     'ui' => [
         'back_top' => 'Torna su',

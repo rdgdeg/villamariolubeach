@@ -208,7 +208,14 @@ h2 { font-size: clamp(1.7rem, 3.6vw, 3rem); }
         0 1px 2px rgba(0, 0, 0, .65),
         0 6px 22px rgba(0, 0, 0, .4);
 }
-.hero-content h1 { color: #fff; }
+.hero-content h1 { color: #fff; margin-bottom: .2em; }
+.hero-ids {
+    font-size: clamp(.92rem, 1.5vw, 1.12rem);
+    font-weight: 800;
+    letter-spacing: .03em;
+    color: #fff;
+    margin: 0 0 1rem;
+}
 .hero-content .btn { text-shadow: none; }
 .hero-lead, .hero-chips { margin-inline: auto; }
 .hero-nav {
@@ -435,7 +442,7 @@ h2 { font-size: clamp(1.7rem, 3.6vw, 3rem); }
 }
 .amenity-grid {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 1.8rem 1rem;
     list-style: none;
     padding: 1.4rem 0 0;
@@ -504,9 +511,22 @@ h2 { font-size: clamp(1.7rem, 3.6vw, 3rem); }
     margin-top: 1.2rem;
     color: var(--gold);
 }
+.hosts-owners {
+    font-weight: 800;
+    font-size: 1.08rem;
+    color: #e39a45;
+    margin: .45rem 0 0;
+    letter-spacing: .02em;
+}
+.villa-name {
+    font-weight: 800;
+    text-decoration: underline;
+    text-underline-offset: .18em;
+    color: inherit;
+}
 
 .nearby {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2.5rem;
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2rem; margin-top: 2.5rem;
 }
 .nearby ul { list-style: none; padding: 0; }
 .nearby li {
@@ -572,6 +592,16 @@ h2 { font-size: clamp(1.7rem, 3.6vw, 3rem); }
 }
 #confiance .cin { text-align: center; }
 .cin { margin-top: 1.4rem; letter-spacing: .04em; color: var(--muted); }
+.cin strong {
+    font-weight: 800;
+    text-decoration: underline;
+    text-underline-offset: .18em;
+    color: var(--ink);
+}
+#disponibilites h2,
+#comment h2 {
+    font-size: clamp(1.25rem, 2.2vw, 1.75rem);
+}
 
 .prices-layout {
     display: grid;

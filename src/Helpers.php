@@ -5,6 +5,15 @@ function e(?string $value): string
     return htmlspecialchars((string) $value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
+function highlight_villa_name(string $text): string
+{
+    return str_replace(
+        'Villa Mariolu Beach',
+        '<strong class="villa-name">Villa Mariolu Beach</strong>',
+        e($text)
+    );
+}
+
 function env_val(string $key, string $default = ''): string
 {
     $value = getenv($key);

@@ -61,6 +61,47 @@ class EmailTemplates
                 )->execute([$kind, $lang, $msg['subject'], $msg['body'], date('Y-m-d H:i:s')]);
             }
         }
+        self::refreshPack('2026-09-16-concetto-copy', ['request', 'confirmed', 'balance']);
+    }
+
+    public static function ensureLatestCopy(): void
+    {
+        self::refreshPack('2026-09-16-concetto-copy', ['request', 'confirmed', 'balance']);
+    }
+
+    /** @param list<string> $kinds */
+    private static function refreshPack(string $pack, array $kinds): void
+    {
+        $stmt = db()->prepare('SELECT setting_value FROM settings WHERE setting_key = ?');
+        $stmt->execute(['email_pack']);
+        $row = $stmt->fetch();
+        if ($row && (string) $row['setting_value'] === $pack) {
+            return;
+        }
+        $now = date('Y-m-d H:i:s');
+        foreach ($kinds as $kind) {
+            foreach (I18n::LANGS as $lang) {
+                $msg = StayCopy::tokenized($kind, $lang);
+                $exists = db()->prepare('SELECT id FROM email_templates WHERE kind = ? AND lang = ?');
+                $exists->execute([$kind, $lang]);
+                if ($exists->fetch()) {
+                    db()->prepare(
+                        'UPDATE email_templates SET subject = ?, body = ?, updated_at = ? WHERE kind = ? AND lang = ?'
+                    )->execute([$msg['subject'], $msg['body'], $now, $kind, $lang]);
+                } else {
+                    db()->prepare(
+                        'INSERT INTO email_templates (kind, lang, subject, body, updated_at) VALUES (?, ?, ?, ?, ?)'
+                    )->execute([$kind, $lang, $msg['subject'], $msg['body'], $now]);
+                }
+            }
+        }
+        if ($row) {
+            db()->prepare('UPDATE settings SET setting_value = ? WHERE setting_key = ?')
+                ->execute([$pack, 'email_pack']);
+        } else {
+            db()->prepare('INSERT INTO settings (setting_key, setting_value) VALUES (?, ?)')
+                ->execute(['email_pack', $pack]);
+        }
     }
 
     /** @return array<string,array{subject:string,body:string}> */
