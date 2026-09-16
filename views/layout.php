@@ -36,6 +36,7 @@
     <script>window.VMB = {
         lang: <?= json_encode(current_lang()) ?>,
         api: <?= json_encode(base_url('api')) ?>,
+        book: <?= json_encode(url_for('reserver')) ?>,
         csrf: <?= json_encode(Csrf::token()) ?>,
         i18n: {
             weekdays: <?= json_encode(t_arr('calendar.weekdays')) ?>,

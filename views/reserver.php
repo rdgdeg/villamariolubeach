@@ -7,6 +7,11 @@ $countries = [
     'US' => 'United States', 'CA' => 'Canada', 'AU' => 'Australia', 'OTHER' => t('book.country_other'),
 ];
 $extras = t_arr('book.extra_items');
+$prefillIn = preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) ($_GET['check_in'] ?? '')) ? (string) $_GET['check_in'] : '';
+$prefillOut = preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) ($_GET['check_out'] ?? '')) ? (string) $_GET['check_out'] : '';
+if ($prefillIn === '' || $prefillOut === '' || $prefillIn >= $prefillOut) {
+    $prefillIn = $prefillOut = '';
+}
 ?>
 <section class="page-hero">
     <div class="wrap">
@@ -25,8 +30,8 @@ $extras = t_arr('book.extra_items');
 
         <form id="booking-form" class="booking-form">
             <?= Csrf::field() ?>
-            <input type="hidden" name="check_in" id="check_in">
-            <input type="hidden" name="check_out" id="check_out">
+            <input type="hidden" name="check_in" id="check_in" value="<?= e($prefillIn) ?>">
+            <input type="hidden" name="check_out" id="check_out" value="<?= e($prefillOut) ?>">
             <label class="hp" aria-hidden="true">
                 <input type="text" name="company" tabindex="-1" autocomplete="off">
             </label>

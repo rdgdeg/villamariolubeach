@@ -22,6 +22,85 @@
         const [y, m, d] = s.split('-').map(Number);
         return new Date(y, m - 1, d);
     };
+    const isIsoDate = (s) => /^\d{4}-\d{2}-\d{2}$/.test(String(s || ''));
+    const stayKey = 'vmb_stay';
+
+    function isCompleteStay(start, end) {
+        return isIsoDate(start) && isIsoDate(end) && start < end;
+    }
+
+    function bookingPathname() {
+        try {
+            if (VMB.book) {
+                return new URL(VMB.book, window.location.origin).pathname.replace(/\/$/, '');
+            }
+        } catch {
+            /* fall through */
+        }
+        return '';
+    }
+
+    function isBookingPath(path) {
+        path = String(path || '').replace(/\/$/, '');
+        const bookPath = bookingPathname();
+        if (bookPath && path === bookPath) return true;
+        return /(?:^|\/)(?:[a-z]{2}\/)?reserver$/.test(path);
+    }
+
+    function withStayParams(href, start, end) {
+        const url = new URL(href, window.location.origin);
+        if (isCompleteStay(start, end)) {
+            url.searchParams.set('check_in', start);
+            url.searchParams.set('check_out', end);
+        } else {
+            url.searchParams.delete('check_in');
+            url.searchParams.delete('check_out');
+        }
+        return url.pathname + url.search + url.hash;
+    }
+
+    function persistStay(start, end) {
+        const complete = isCompleteStay(start, end);
+        try {
+            if (complete) sessionStorage.setItem(stayKey, JSON.stringify({ start, end }));
+            else sessionStorage.removeItem(stayKey);
+        } catch {
+            /* ignore quota / private mode */
+        }
+        document.querySelectorAll('a[href]').forEach((a) => {
+            let path;
+            try {
+                path = new URL(a.href, window.location.origin).pathname.replace(/\/$/, '');
+            } catch {
+                return;
+            }
+            if (!isBookingPath(path)) return;
+            a.setAttribute('href', withStayParams(a.getAttribute('href'), complete ? start : '', complete ? end : ''));
+        });
+    }
+
+    function readStay() {
+        const params = new URLSearchParams(window.location.search);
+        const fromQuery = {
+            start: params.get('check_in') || '',
+            end: params.get('check_out') || '',
+        };
+        if (isCompleteStay(fromQuery.start, fromQuery.end)) return fromQuery;
+        const cin = document.getElementById('check_in');
+        const cout = document.getElementById('check_out');
+        if (isCompleteStay(cin?.value, cout?.value)) {
+            return { start: cin.value, end: cout.value };
+        }
+        try {
+            const saved = JSON.parse(sessionStorage.getItem(stayKey) || 'null');
+            if (saved && isCompleteStay(saved.start, saved.end)) {
+                return { start: saved.start, end: saved.end };
+            }
+        } catch {
+            /* ignore */
+        }
+        return null;
+    }
 
     roots.forEach((root) => initCalendar(root));
 
@@ -33,6 +112,11 @@
         let monthsData = [];
         let start = null;
         let end = null;
+        let pendingStay = mode === 'block' ? null : readStay();
+        if (pendingStay) {
+            cursor = parse(pendingStay.start);
+            cursor.setDate(1);
+        }
 
         function statusFor(date) {
             for (const month of monthsData) {
@@ -70,6 +154,7 @@
             const formOut = document.querySelector('form [name="check_out"]');
             [cin, formIn].forEach((el) => { if (el) el.value = start || ''; });
             [cout, formOut].forEach((el) => { if (el) el.value = end || ''; });
+            persistStay(start, end);
         }
 
         async function load() {
@@ -77,7 +162,21 @@
             const res = await fetch(`${VMB.api}/calendar?month=${month}&months=${monthCount}&lang=${VMB.lang}${VMB.admin ? '&details=1' : ''}`);
             const json = await res.json();
             monthsData = json.months || [];
+            if (pendingStay) {
+                const stay = pendingStay;
+                pendingStay = null;
+                if (canStart(stay.start)) {
+                    start = stay.start;
+                    if (canEnd(stay.end)) {
+                        end = stay.end;
+                    } else {
+                        start = null;
+                    }
+                }
+                syncInputs();
+            }
             render();
+            quote();
         }
 
         function render() {
@@ -249,6 +348,7 @@
                 ok.hidden = false;
                 start = null;
                 end = null;
+                persistStay(null, null);
                 form.querySelectorAll('input, textarea, select, button').forEach((el) => {
                     if (el.type !== 'hidden') el.disabled = true;
                 });
