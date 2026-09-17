@@ -82,8 +82,6 @@ foreach ($seasons as $s) {
         <p class="kicker gold"><?= e(t('hero.kicker')) ?></p>
         <h1><?= e(t('hero.title')) ?></h1>
         <p class="hero-ids"><?= e(t('hero.ids')) ?></p>
-        <p class="hero-sub"><?= e(t('hero.subtitle')) ?></p>
-        <p class="hero-lead"><?= e(t('hero.lead')) ?></p>
         <p class="hero-chips"><?= e(t('hero.chips')) ?></p>
         <a class="btn btn-gold" href="<?= e(url_for('reserver')) ?>"><?= e(t('hero.cta')) ?></a>
         <div class="hero-nav">
