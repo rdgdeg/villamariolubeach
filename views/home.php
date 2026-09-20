@@ -34,12 +34,14 @@ $placeCards = [
 ];
 $galleryPreview = 6;
 $gallery = [
-    'gallery/bedroom.jpg', 'gallery/bathroom.jpg', 'gallery/hallway.jpg',
+    'gallery/bedroom.jpg', 'gallery/twins.jpg', 'gallery/bathroom.jpg', 'gallery/hallway.jpg',
     'hero/sea-view.jpg', 'gallery/ext-olive.jpg', 'gallery/g2.jpg',
-    'gallery/bedroom-lamp.jpg', 'gallery/g7.jpg', 'gallery/g10.jpg', 'gallery/g3.jpg',
-    'gallery/g8.jpg', 'gallery/g11.jpg', 'gallery/g28.jpg', 'gallery/g31.jpg',
-    'gallery/g35.jpg', 'gallery/ext-garden.jpg', 'gallery/g1.jpg', 'gallery/g39.jpg',
-    'location/beach.jpg', 'gallery/g15.jpg', 'gallery/g5.jpg', 'gallery/ext-6.jpg',
+    'gallery/bedroom-lamp.jpg', 'gallery/kitchen-wide.jpg', 'gallery/dining.jpg',
+    'gallery/g10.jpg', 'gallery/g3.jpg', 'gallery/g8.jpg', 'gallery/outdoor-shower.jpg',
+    'gallery/g11.jpg', 'gallery/g28.jpg', 'gallery/terrace-dining.jpg', 'gallery/terrace-lounge.jpg',
+    'gallery/villa-exterior.jpg', 'gallery/g31.jpg', 'gallery/g35.jpg', 'gallery/ext-garden.jpg',
+    'gallery/g1.jpg', 'gallery/g39.jpg', 'location/beach.jpg', 'gallery/g15.jpg',
+    'gallery/g5.jpg', 'gallery/ext-6.jpg',
 ];
 $restaurants = [
     ['La Shardana', '150 m'],
