@@ -6,7 +6,8 @@ class BookingService
     {
         $checkIn = trim((string) ($input['check_in'] ?? ''));
         $checkOut = trim((string) ($input['check_out'] ?? ''));
-        $quote = Pricing::quote($checkIn, $checkOut);
+        $extras = Pricing::normalizeExtras($input['extras'] ?? []);
+        $quote = Pricing::quote($checkIn, $checkOut, null, $extras);
         if (empty($quote['ok'])) {
             return $quote;
         }
@@ -24,12 +25,6 @@ class BookingService
         $message = trim((string) ($input['guest_message'] ?? ''));
         $adults = max(1, min(6, (int) ($input['adults'] ?? 2)));
         $children = max(0, min(4, (int) ($input['children'] ?? 0)));
-        $allowedExtras = ['baby_cot', 'high_chair', 'beach_towels', 'late_arrival'];
-        $extrasIn = $input['extras'] ?? [];
-        if (!is_array($extrasIn)) {
-            $extrasIn = $extrasIn === '' ? [] : [$extrasIn];
-        }
-        $extras = array_values(array_intersect($extrasIn, $allowedExtras));
         $terms = $input['accept_terms'] ?? '';
         if ($adults + $children > 6) {
             return ['ok' => false, 'error' => 'capacity'];
@@ -47,13 +42,13 @@ class BookingService
                 status, check_in, check_out, nights, adults, children,
                 guest_name, guest_first_name, guest_last_name, guest_email, guest_phone,
                 guest_country, occupants, extras, guest_message, guest_lang,
-                rental_subtotal, discount_percent, discount_amount, cleaning_fee,
+                rental_subtotal, discount_percent, discount_amount, cleaning_fee, extras_fee,
                 total, deposit_amount, deposit_percent, caution, admin_notes, created_at, updated_at
             ) VALUES (
                 ?, ?, ?, ?, ?, ?,
                 ?, ?, ?, ?, ?,
                 ?, ?, ?, ?, ?,
-                ?, ?, ?, ?,
+                ?, ?, ?, ?, ?,
                 ?, ?, ?, ?, ?, ?, ?
             )'
         );
@@ -78,6 +73,7 @@ class BookingService
             $quote['discount_percent'],
             $quote['discount_amount'],
             $quote['cleaning_fee'],
+            $quote['extras_fee'],
             $quote['total'],
             $quote['deposit_amount'],
             $quote['deposit_percent'],
@@ -158,7 +154,8 @@ class BookingService
         }
         $checkIn = trim((string) ($input['check_in'] ?? $booking['check_in']));
         $checkOut = trim((string) ($input['check_out'] ?? $booking['check_out']));
-        $quote = Pricing::quote($checkIn, $checkOut, $id);
+        $extras = Pricing::normalizeExtras(json_decode((string) ($booking['extras'] ?? '[]'), true));
+        $quote = Pricing::quote($checkIn, $checkOut, $id, $extras);
         if (empty($quote['ok'])) {
             return $quote;
         }
@@ -188,7 +185,7 @@ class BookingService
                 check_in=?, check_out=?, nights=?, adults=?, children=?,
                 guest_name=?, guest_first_name=?, guest_last_name=?, guest_email=?, guest_phone=?,
                 guest_country=?, occupants=?, guest_message=?,
-                rental_subtotal=?, discount_percent=?, discount_amount=?, cleaning_fee=?,
+                rental_subtotal=?, discount_percent=?, discount_amount=?, cleaning_fee=?, extras_fee=?,
                 total=?, deposit_amount=?, deposit_percent=?, caution=?, admin_notes=?,
                 deposit_paid=?, balance_paid=?, updated_at=?
              WHERE id=?'
@@ -197,7 +194,7 @@ class BookingService
             $quote['check_in'], $quote['check_out'], $quote['nights'], $adults, $children,
             $name, $first, $last, $email, $phone,
             $country, $occupants, $message,
-            $quote['rental_subtotal'], $quote['discount_percent'], $quote['discount_amount'], $quote['cleaning_fee'],
+            $quote['rental_subtotal'], $quote['discount_percent'], $quote['discount_amount'], $quote['cleaning_fee'], $quote['extras_fee'],
             $quote['total'], $deposit['deposit_amount'], $deposit['deposit_percent'], $quote['caution'], $notes,
             $depositPaid, $balancePaid, date('Y-m-d H:i:s'),
             $id,
@@ -265,7 +262,12 @@ class BookingService
     {
         $rental = (float) ($quote['rental'] ?? 0);
         if ($rental <= 0) {
-            $rental = round($total - (float) ($quote['cleaning_fee'] ?? 0), 2);
+            $rental = round(
+                $total
+                - (float) ($quote['cleaning_fee'] ?? 0)
+                - (float) ($quote['extras_fee'] ?? 0),
+                2
+            );
         }
         $amountRaw = trim((string) ($input['deposit_amount'] ?? ''));
         $percentRaw = trim((string) ($input['deposit_percent'] ?? ''));

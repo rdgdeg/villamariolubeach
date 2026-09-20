@@ -108,6 +108,57 @@ class Pricing
         return (int) $start->diff($end)->days + 1;
     }
 
+    /** @return array<string,float> */
+    public static function extraRates(): array
+    {
+        return [
+            'baby_cot' => 15.0,
+            'high_chair' => 5.0,
+        ];
+    }
+
+    /** @return string[] */
+    public static function allowedExtras(): array
+    {
+        return array_keys(self::extraRates());
+    }
+
+    /** @return string[] */
+    public static function normalizeExtras(mixed $extrasIn): array
+    {
+        if (!is_array($extrasIn)) {
+            $extrasIn = ($extrasIn === '' || $extrasIn === null) ? [] : [$extrasIn];
+        }
+        return array_values(array_intersect($extrasIn, self::allowedExtras()));
+    }
+
+    public static function extrasFee(array $extras, int $nights): float
+    {
+        $rates = self::extraRates();
+        $perNight = 0.0;
+        foreach ($extras as $key) {
+            $perNight += $rates[$key] ?? 0.0;
+        }
+        return round($perNight * max(0, $nights), 2);
+    }
+
+    /** @return array{key:string,amount:float}[] */
+    public static function extrasLines(array $extras, int $nights): array
+    {
+        $rates = self::extraRates();
+        $lines = [];
+        foreach ($extras as $key) {
+            if (!isset($rates[$key])) {
+                continue;
+            }
+            $lines[] = [
+                'key' => $key,
+                'amount' => round($rates[$key] * max(0, $nights), 2),
+            ];
+        }
+        return $lines;
+    }
+
     /** @return array{date:string,rate:float,label:string}[] */
     public static function nightsBreakdown(string $checkIn, string $checkOut): array
     {
@@ -132,7 +183,7 @@ class Pricing
         return $nightly;
     }
 
-    public static function quote(string $checkIn, string $checkOut, ?int $ignoreBookingId = null): array
+    public static function quote(string $checkIn, string $checkOut, ?int $ignoreBookingId = null, array $extras = []): array
     {
         $in = DateTimeImmutable::createFromFormat('Y-m-d', $checkIn);
         $out = DateTimeImmutable::createFromFormat('Y-m-d', $checkOut);
@@ -189,8 +240,10 @@ class Pricing
         $discountAmount = round($subtotal * $discountPercent / 100, 2);
         $rental = round($subtotal - $discountAmount, 2);
         $cleaning = (float) setting('cleaning_fee', 100);
+        $extras = self::normalizeExtras($extras);
+        $extrasFee = self::extrasFee($extras, $nights);
         $caution = (float) setting('caution', 300);
-        $total = round($rental + $cleaning, 2);
+        $total = round($rental + $cleaning + $extrasFee, 2);
         $depositPercent = (float) setting('deposit_percent', 15);
         $deposit = round($rental * $depositPercent / 100, 2);
 
@@ -205,6 +258,9 @@ class Pricing
             'discount_amount' => $discountAmount,
             'rental' => $rental,
             'cleaning_fee' => $cleaning,
+            'extras' => $extras,
+            'extras_fee' => $extrasFee,
+            'extras_lines' => self::extrasLines($extras, $nights),
             'total' => $total,
             'deposit_percent' => $depositPercent,
             'deposit_amount' => $deposit,

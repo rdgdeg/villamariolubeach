@@ -163,6 +163,9 @@ $mailConfirm = static function (string $label) use ($guestEmail): string {
                     <?php endif; ?>
                     <div><dt>Réduction <?= e((string) $booking['discount_percent']) ?> %</dt><dd>− <?= e(money((float) $booking['discount_amount'])) ?></dd></div>
                     <div><dt>Nettoyage</dt><dd><?= e(money((float) $booking['cleaning_fee'])) ?></dd></div>
+                    <?php if ((float) ($booking['extras_fee'] ?? 0) > 0 || $extras): ?>
+                        <div><dt>Options<?= $extras ? ' (' . e(implode(', ', array_map(static fn ($k) => $extraLabels[$k] ?? $k, $extras))) . ')' : '' ?></dt><dd><?= e(money((float) ($booking['extras_fee'] ?? 0))) ?></dd></div>
+                    <?php endif; ?>
                     <div class="is-total"><dt>Total</dt><dd><?= e(money((float) $booking['total'])) ?></dd></div>
                     <div><dt>Acompte <span data-deposit-percent-label><?= e((string) $depositPercent) ?></span> %</dt><dd data-deposit-line><?= e(money((float) $booking['deposit_amount'])) ?></dd></div>
                     <div><dt>Solde</dt><dd data-balance-line><?= e(money($balance)) ?></dd></div>

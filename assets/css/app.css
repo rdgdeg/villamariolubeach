@@ -862,6 +862,7 @@ label.chk, .chk {
     font-size: 1.05rem;
 }
 .terms-box p, .house-rules p { margin: 0; font-weight: 500; line-height: 1.55; }
+.terms-sign { font-weight: 600; }
 .included-list, .golden-list {
     list-style: none;
     padding: 0;

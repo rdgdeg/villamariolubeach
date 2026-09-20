@@ -92,7 +92,12 @@ function handle_api(array $segments): void
 
     if ($endpoint === 'quote' && request_method() === 'POST') {
         $payload = json_input();
-        json_response(Pricing::quote($payload['check_in'] ?? '', $payload['check_out'] ?? ''));
+        json_response(Pricing::quote(
+            $payload['check_in'] ?? '',
+            $payload['check_out'] ?? '',
+            null,
+            Pricing::normalizeExtras($payload['extras'] ?? [])
+        ));
     }
 
     if ($endpoint === 'booking' && request_method() === 'POST') {

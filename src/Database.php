@@ -200,6 +200,7 @@ class Database
             discount_percent $dec NOT NULL DEFAULT 0,
             discount_amount $dec NOT NULL DEFAULT 0,
             cleaning_fee $dec NOT NULL DEFAULT 0,
+            extras_fee $dec NOT NULL DEFAULT 0,
             total $dec NOT NULL DEFAULT 0,
             deposit_amount $dec NOT NULL DEFAULT 0,
             caution $dec NOT NULL DEFAULT 0,
@@ -218,6 +219,7 @@ class Database
         $this->addColumn('bookings', 'guest_country', "$text NOT NULL DEFAULT ''");
         $this->addColumn('bookings', 'occupants', $long);
         $this->addColumn('bookings', 'extras', $long);
+        $this->addColumn('bookings', 'extras_fee', "$dec NOT NULL DEFAULT 0");
         $this->addColumn('bookings', 'deposit_paid', 'INT NOT NULL DEFAULT 0');
         $this->addColumn('bookings', 'balance_paid', 'INT NOT NULL DEFAULT 0');
         $this->addColumn('bookings', 'deposit_reminded_at', $text);

@@ -127,7 +127,7 @@ if ($prefillIn === '' || $prefillOut === '' || $prefillIn >= $prefillOut) {
                         <?php require ROOT . '/views/partials/stay-info.php'; ?>
                         <label class="chk terms">
                             <input type="checkbox" name="accept_terms" value="1">
-                            <span><?= e(t('book.terms')) ?> <a href="<?= e(url_for('mentions')) ?>" target="_blank" rel="noopener"><?= e(t('book.terms_link')) ?></a> *</span>
+                            <span><?= e(t('book.terms')) ?> <a href="<?= e(url_for('home')) ?>#faq"><?= e(t('book.terms_link')) ?></a> *</span>
                         </label>
                         <p id="step2-error" class="form-error" hidden></p>
                         <div class="step-actions">

@@ -218,7 +218,13 @@
             });
         }
 
-        async function quote() {
+        async function selectedExtras() {
+            const form = document.getElementById('booking-form');
+            if (!form) return [];
+            return [...form.querySelectorAll('[name="extras[]"]:checked')].map((el) => el.value);
+        }
+
+        async function quote(opts = {}) {
             if (mode !== 'booking') return;
             const box = document.getElementById('quote');
             const err = document.getElementById('quote-error');
@@ -235,10 +241,11 @@
             }
             cin.value = start;
             cout.value = end;
+            const extras = await selectedExtras();
             const res = await fetch(`${VMB.api}/quote?lang=${encodeURIComponent(VMB.lang)}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ check_in: start, check_out: end }),
+                body: JSON.stringify({ check_in: start, check_out: end, extras }),
             });
             const data = await res.json();
             if (!data.ok) {
@@ -255,6 +262,10 @@
             const nightsHtml = (data.nights_detail || []).map((n) =>
                 `<li><span>${fmtDate(n.date)}</span><span>${euro(n.rate)}</span></li>`
             ).join('');
+            const extrasHtml = (data.extras_lines || []).map((line) => {
+                const label = (i18n.extra_items && i18n.extra_items[line.key]) || line.key;
+                return `<div><span>${label}</span><span>${euro(line.amount)}</span></div>`;
+            }).join('');
             box.hidden = false;
             box.innerHTML = `
                 <div class="quote-stay">
@@ -266,6 +277,7 @@
                 <div><span>${i18n.rental}</span><span>${euro(data.rental_subtotal)}</span></div>
                 ${data.discount_percent ? `<div><span>${i18n.discount.replace(':p', data.discount_percent)}</span><span>− ${euro(data.discount_amount)}</span></div>` : ''}
                 <div><span>${i18n.cleaning}</span><span>${euro(data.cleaning_fee)}</span></div>
+                ${extrasHtml}
                 <div class="total"><span>${i18n.total}</span><span>${euro(data.total)}</span></div>
                 <div><span>${i18n.deposit.replace(':p', data.deposit_percent)}</span><span>${euro(data.deposit_amount)}</span></div>
                 <div><span>${i18n.balance}</span><span>${euro(data.balance)}</span></div>
@@ -274,9 +286,11 @@
             if (submit) submit.disabled = false;
             if (cont) {
                 cont.disabled = false;
-                requestAnimationFrame(() => {
-                    cont.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
-                });
+                if (opts.scroll !== false) {
+                    requestAnimationFrame(() => {
+                        cont.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+                    });
+                }
             }
             const summary = document.getElementById('quote-summary');
             if (summary) {
@@ -323,6 +337,11 @@
         const form = document.getElementById('booking-form');
         if (form && mode === 'booking' && !form.dataset.calBound) {
             form.dataset.calBound = '1';
+            form.addEventListener('change', (e) => {
+                if (e.target && e.target.name === 'extras[]') {
+                    quote({ scroll: false });
+                }
+            });
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const err = document.getElementById('step2-error') || document.getElementById('quote-error');

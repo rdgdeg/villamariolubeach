@@ -48,6 +48,7 @@
             nights: <?= json_encode(t('book.nights')) ?>,
             rental: <?= json_encode(t('book.rental')) ?>,
             discount: <?= json_encode(t('book.discount')) ?>,
+            extra_items: <?= json_encode(t_arr('book.extra_items')) ?>,
             cleaning: <?= json_encode(t('book.cleaning')) ?>,
             total: <?= json_encode(t('book.total')) ?>,
             deposit: <?= json_encode(t('book.deposit')) ?>,
