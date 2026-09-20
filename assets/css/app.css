@@ -841,6 +841,8 @@ input, select, textarea {
 .extras-box {
     border: 1px solid var(--line); border-radius: 12px;
     padding: .9rem 1.05rem 1.05rem; margin: 0;
+    display: grid;
+    gap: .55rem;
 }
 .extras-box legend { font-weight: 700; padding: 0 .25rem; }
 label.chk, .chk {
@@ -849,6 +851,17 @@ label.chk, .chk {
 }
 .chk input { width: auto; margin-top: .28rem; accent-color: var(--terracotta); }
 .chk.terms { font-weight: 600; }
+.booking-fields {
+    display: grid;
+    gap: 1.2rem;
+}
+#booking-step-2 .terms-box {
+    margin-top: .35rem;
+    margin-bottom: .15rem;
+    padding: 1.35rem 1.4rem 1.45rem;
+    gap: .9rem;
+}
+#booking-step-2 .terms-sign { margin-top: .15rem; }
 .terms-box, .house-rules, .pay-letter-box {
     background: var(--foam);
     border: 1px solid var(--line);
