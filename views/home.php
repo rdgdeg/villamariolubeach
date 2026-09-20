@@ -319,9 +319,9 @@ foreach ($seasons as $s) {
                             <th class="num group" colspan="3"><?= e(t('prices.grid_group')) ?></th>
                         </tr>
                         <tr>
-                            <th class="num"><?= e(t('prices.col_6')) ?></th>
-                            <th class="num"><?= e(t('prices.col_10')) ?></th>
-                            <th class="num"><?= e(t('prices.col_15')) ?></th>
+                            <th class="num"><?= e(t('prices.col_rate')) ?></th>
+                            <th class="num"><?= e(t('prices.col_rate')) ?></th>
+                            <th class="num"><?= e(t('prices.col_rate')) ?></th>
                         </tr>
                     </thead>
                     <tbody>

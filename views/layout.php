@@ -92,12 +92,12 @@
                         <?php endforeach; ?>
                     </div>
                 </details>
-                <a class="nav-social" href="<?= e(setting('instagram')) ?>" target="_blank" rel="noopener" aria-label="Instagram">
-                    <img src="<?= e(asset('img/logo/instagram.png')) ?>" alt="">
-                </a>
                 <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav" data-menu>
                     <span></span><span></span><span></span>
                 </button>
+                <a class="nav-social" href="<?= e(setting('instagram')) ?>" target="_blank" rel="noopener" aria-label="Instagram">
+                    <img src="<?= e(asset('img/logo/instagram.png')) ?>" alt="">
+                </a>
             </div>
         </div>
     </header>
