@@ -284,7 +284,7 @@ return [
         'bank_title' => 'Bankgegevens:',
         'holder' => 'Naam:',
         'reference' => 'Mededeling:',
-        'sign' => "Met vriendelijke groet,\n\nTot gauw!\nConcetto & Cinzia",
+        'sign' => "Met vriendelijke groet,\n\nTot gauw!\nConcetto & Cinzia\nThe Villa Mariolu Owner.\nEmail – VillaMarioluBeach@gmail.com",
         'subject_deposit' => 'Villa Mariolu Beach — voorschot te betalen',
         'subject_balance' => 'Villa Mariolu Beach — saldo te betalen',
         'balance_soon' => 'We zijn 2 maanden voor uw vakantie!',

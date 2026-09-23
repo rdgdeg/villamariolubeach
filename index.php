@@ -503,7 +503,7 @@ function handle_admin(array $segments): void
                 }
                 $sample = EmailTemplates::sampleBooking($lang);
                 $msg = StayCopy::email($sample, $kind);
-                $to = trim((string) setting('email', ''));
+                $to = Mailer::hostAddress();
                 $sent = Mailer::send($to, $msg['subject'], $msg['body'], null, 'test-' . $kind, null);
                 flash($sent ? 'success' : 'error', $sent
                     ? 'E-mail de test envoyé à ' . $to . ' (' . strtoupper($lang) . ').'
@@ -523,7 +523,7 @@ function handle_admin(array $segments): void
     if ($action === 'settings') {
         if (request_method() === 'POST') {
             Csrf::requireValid();
-            foreach (['cleaning_fee', 'caution', 'deposit_percent', 'min_nights', 'max_nights', 'email', 'address', 'cin', 'iun', 'bank_name', 'iban', 'bic', 'payment_ref', 'mail_from'] as $key) {
+            foreach (['cleaning_fee', 'caution', 'deposit_percent', 'min_nights', 'max_nights', 'email', 'notify_email', 'address', 'cin', 'iun', 'bank_name', 'iban', 'bic', 'payment_ref', 'mail_from'] as $key) {
                 if (isset($_POST[$key])) {
                     set_setting($key, post($key));
                 }

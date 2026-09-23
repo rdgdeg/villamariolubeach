@@ -346,7 +346,7 @@ return [
         'bank_title' => 'Coordonnées bancaires :',
         'holder' => 'Titulaire :',
         'reference' => 'Communication :',
-        'sign' => "Cordialement,\n\nÀ bientôt !\nConcetto & Cinzia",
+        'sign' => "Cordialement,\n\nÀ bientôt !\nConcetto & Cinzia\nThe Villa Mariolu Owner.\nEmail – VillaMarioluBeach@gmail.com",
         'subject_deposit' => 'Villa Mariolu Beach — acompte à verser',
         'subject_balance' => 'Villa Mariolu Beach — solde à payer',
         'balance_soon' => 'Nous sommes 2 mois avant vos vacances !',

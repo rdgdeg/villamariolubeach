@@ -284,7 +284,7 @@ return [
         'bank_title' => 'Dane do przelewu:',
         'holder' => 'Odbiorca:',
         'reference' => 'Tytuł przelewu:',
-        'sign' => "Serdecznie,\n\nDo zobaczenia!\nConcetto & Cinzia",
+        'sign' => "Serdecznie,\n\nDo zobaczenia!\nConcetto & Cinzia\nThe Villa Mariolu Owner.\nEmail – VillaMarioluBeach@gmail.com",
         'subject_deposit' => 'Villa Mariolu Beach — zaliczka do wpłaty',
         'subject_balance' => 'Villa Mariolu Beach — saldo do zapłaty',
         'balance_soon' => 'Jesteśmy 2 miesiące przed Waszymi wakacjami!',

@@ -307,6 +307,7 @@ class Database
             'iun' => 'S5635',
             'address' => 'Via Patroclo, 07051 Budoni (Tanaunella) — SS',
             'email' => 'VillaMarioluBeach@gmail.com',
+            'notify_email' => 'luxuryvillamariolu@gmail.com',
             'instagram' => 'https://www.instagram.com/villa_mariolu_beach_budoni/',
             'facebook' => 'https://www.facebook.com/VillaMarioluBeachBudoniSardegna',
             'google_reviews' => 'https://share.google/uUeSIM645i1E55wSX',

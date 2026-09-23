@@ -284,7 +284,7 @@ return [
         'bank_title' => 'Bankverbindung:',
         'holder' => 'Kontoinhaber:',
         'reference' => 'Verwendungszweck:',
-        'sign' => "Mit freundlichen Grüßen,\n\nBis bald!\nConcetto & Cinzia",
+        'sign' => "Mit freundlichen Grüßen,\n\nBis bald!\nConcetto & Cinzia\nThe Villa Mariolu Owner.\nEmail – VillaMarioluBeach@gmail.com",
         'subject_deposit' => 'Villa Mariolu Beach — Anzahlung fällig',
         'subject_balance' => 'Villa Mariolu Beach — Restbetrag fällig',
         'balance_soon' => 'Wir sind 2 Monate vor Ihrem Urlaub!',

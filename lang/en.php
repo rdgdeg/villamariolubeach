@@ -297,7 +297,7 @@ return [
         'bank_title' => 'Bank details:',
         'holder' => 'Name:',
         'reference' => 'Reference:',
-        'sign' => "Kind regards,\n\nSee you soon!\nConcetto & Cinzia",
+        'sign' => "Kind regards,\n\nSee you soon!\nConcetto & Cinzia\nThe Villa Mariolu Owner.\nEmail – VillaMarioluBeach@gmail.com",
         'subject_deposit' => 'Villa Mariolu Beach — deposit to pay',
         'subject_balance' => 'Villa Mariolu Beach — balance due',
         'balance_soon' => 'We are 2 months before your holiday!',

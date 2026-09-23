@@ -70,7 +70,7 @@ $tokens = EmailTemplates::tokens();
             <input type="hidden" name="form" value="test">
             <input type="hidden" name="kind" value="<?= e($kind) ?>">
             <input type="hidden" name="lang" value="fr" data-email-test-lang>
-            <button type="submit" class="btn-secondary">Envoyer un test (langue affichée → <?= e(setting('email')) ?>)</button>
+            <button type="submit" class="btn-secondary">Envoyer un test (langue affichée → <?= e(Mailer::hostAddress()) ?>)</button>
         </form>
     </div>
 </div>

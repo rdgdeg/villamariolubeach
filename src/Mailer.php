@@ -17,6 +17,22 @@ class Mailer
         return filter_var($email, FILTER_VALIDATE_EMAIL) ? $email : 'noreply@localhost';
     }
 
+    public static function publicAddress(): string
+    {
+        $email = trim((string) setting('email', 'VillaMarioluBeach@gmail.com'));
+        return filter_var($email, FILTER_VALIDATE_EMAIL) ? $email : '';
+    }
+
+    public static function hostAddress(): string
+    {
+        $notify = trim((string) setting('notify_email', ''));
+        if (filter_var($notify, FILTER_VALIDATE_EMAIL)) {
+            return $notify;
+        }
+        $email = trim((string) setting('email', ''));
+        return filter_var($email, FILTER_VALIDATE_EMAIL) ? $email : '';
+    }
+
     public static function send(string $to, string $subject, string $body, ?string $replyTo = null, ?string $kind = null, ?int $bookingId = null): bool
     {
         $to = trim($to);
@@ -53,11 +69,12 @@ class Mailer
         if (trim($body) === '') {
             $body = $msg['body'];
         }
+        $replyTo = self::publicAddress() ?: null;
         return self::send(
             $to,
             $subject,
             $body,
-            null,
+            $replyTo,
             $kind,
             (int) ($booking['id'] ?? 0)
         );
@@ -65,7 +82,7 @@ class Mailer
 
     public static function notifyHost(string $subject, string $body, ?string $replyTo = null): bool
     {
-        $host = trim((string) setting('email', ''));
+        $host = self::hostAddress();
         if (!filter_var($host, FILTER_VALIDATE_EMAIL)) {
             return false;
         }
@@ -74,7 +91,7 @@ class Mailer
 
     public static function notifyHostNewRequest(array $booking): bool
     {
-        $host = trim((string) setting('email', ''));
+        $host = self::hostAddress();
         $msg = StayCopy::email($booking, 'host');
         return self::send(
             $host,
