@@ -64,12 +64,6 @@ $shops = [
     ['Despar', '1 km'],
     ['Alessandro & Gessica', '1 km'],
 ];
-$minRate = 9999;
-foreach ($seasons as $s) {
-    if (!(int) $s['is_closed'] && (float) $s['nightly_rate'] > 0) {
-        $minRate = min($minRate, (float) $s['nightly_rate']);
-    }
-}
 ?>
 <section class="hero" data-hero-slider>
     <div class="hero-slides" aria-hidden="true">
@@ -416,13 +410,5 @@ foreach ($seasons as $s) {
                 </details>
             <?php endforeach; ?>
         </div>
-    </div>
-</section>
-
-<section class="cta-band">
-    <div class="wrap">
-        <h2><?= e(t('book.title')) ?></h2>
-        <p><?= e(t('prices.from')) ?> <?= e(money($minRate)) ?> / <?= e(t('prices.night')) ?></p>
-        <a class="btn btn-gold" href="<?= e(url_for('reserver')) ?>"><?= e(t('nav.book')) ?></a>
     </div>
 </section>

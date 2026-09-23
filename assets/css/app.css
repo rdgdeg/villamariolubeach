@@ -749,9 +749,6 @@ h2 { font-size: clamp(1.7rem, 3.6vw, 3rem); }
     border-bottom: 1px solid var(--line); padding: .8rem 0;
 }
 .faq summary { cursor: pointer; font-weight: 600; }
-.cta-band {
-    background: var(--terracotta); color: #fff; text-align: center; padding: 4rem 0;
-}
 .page-hero { padding: 6.6rem 0 1.6rem; background: var(--sea); color: #fff; }
 .page-hero .eyebrow { color: var(--gold); }
 .page-hero .lead {
@@ -1027,7 +1024,6 @@ label.chk, .chk {
     .section { padding: 2.2rem 0; }
     .hosts { padding: 2.4rem 0; }
     .reviews { padding: 2.4rem 0; }
-    .cta-band { padding: 2.4rem 0; }
     .points { margin-top: 1.25rem; gap: .85rem; }
     .amenity-grid { padding: .5rem 0 0; gap: 1.1rem .7rem; }
     .gallery-grid { margin-top: 1rem; }
@@ -1055,7 +1051,7 @@ label.chk, .chk {
     .logo img { height: 60px; }
     .lang-switch summary { padding: .28rem .5rem; font-size: .78rem; }
     .section { padding: 1.75rem 0; }
-    .hosts, .reviews, .cta-band { padding: 2rem 0; }
+    .hosts, .reviews { padding: 2rem 0; }
     .masonry, .gallery-grid { columns: 1; grid-template-columns: 1fr; }
     .masonry-item img { height: 200px; }
     .facts-grid { grid-template-columns: 1fr 1fr; }
