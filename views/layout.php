@@ -45,6 +45,7 @@
             request: <?= json_encode(t('calendar.request')) ?>,
             unavailable: <?= json_encode(t('calendar.unavailable')) ?>,
             turnover: <?= json_encode(t('calendar.turnover')) ?>,
+            arrival_day: <?= json_encode(t('calendar.arrival_day')) ?>,
             nights: <?= json_encode(t('book.nights')) ?>,
             rental: <?= json_encode(t('book.rental')) ?>,
             discount: <?= json_encode(t('book.discount')) ?>,

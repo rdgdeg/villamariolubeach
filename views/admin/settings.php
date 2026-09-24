@@ -8,7 +8,7 @@
         <label>Max. nuits <input name="max_nights" type="number" value="<?= e(setting('max_nights')) ?>"></label>
     </div>
     <label>E-mail public (affiché sur le site) <input name="email" type="email" value="<?= e(setting('email')) ?>"></label>
-    <label>E-mail notifications propriétaire <input name="notify_email" type="email" value="<?= e(setting('notify_email')) ?>" placeholder="luxuryvillamariolu@gmail.com"></label>
+    <label>E-mail notifications propriétaire <input name="notify_email" type="email" value="<?= e(setting('notify_email')) ?>" placeholder="villamariolubeach@gmail.com"></label>
     <label>Adresse <input name="address" value="<?= e(setting('address')) ?>"></label>
     <label>CIN <input name="cin" value="<?= e(setting('cin')) ?>"></label>
     <label>IUN <input name="iun" value="<?= e(setting('iun')) ?>"></label>

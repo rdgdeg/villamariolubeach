@@ -21,8 +21,8 @@
                             <input type="hidden" name="id" value="<?= (int) $s['id'] ?>">
                             <input type="hidden" name="sort_order" value="<?= (int) $s['sort_order'] ?>">
                             <input name="label" value="<?= e($s['label']) ?>">
-                            <input class="date-eu" name="start_date" value="<?= e(format_eu_date_parts((int) $s['start_day'], (int) $s['start_month'])) ?>" placeholder="jj/mm/aaaa" inputmode="numeric" autocomplete="off" required>
-                            <input class="date-eu" name="end_date" value="<?= e(format_eu_date_parts((int) $s['end_day'], (int) $s['end_month'])) ?>" placeholder="jj/mm/aaaa" inputmode="numeric" autocomplete="off" required>
+                            <input class="date-eu" name="start_date" value="<?= e(format_eu_date_parts((int) $s['start_day'], (int) $s['start_month'], isset($s['year']) && $s['year'] !== null && $s['year'] !== '' ? (int) $s['year'] : null)) ?>" placeholder="jj/mm/aaaa" inputmode="numeric" autocomplete="off" required>
+                            <input class="date-eu" name="end_date" value="<?= e(format_eu_date_parts((int) $s['end_day'], (int) $s['end_month'], season_end_year($s))) ?>" placeholder="jj/mm/aaaa" inputmode="numeric" autocomplete="off" required>
                             <input type="number" step="1" name="nightly_rate" value="<?= e($s['nightly_rate']) ?>" style="width:6rem">
                             <label class="chk"><input type="checkbox" name="is_closed" value="1" <?= (int) $s['is_closed'] ? 'checked' : '' ?>> fermé</label>
                             <button type="submit">OK</button>
@@ -63,12 +63,12 @@
     <input type="hidden" name="form" value="season_create">
     <label>Libellé <input name="label" required></label>
     <div class="row">
-        <label>Début <input class="date-eu" name="start_date" placeholder="01/12/2026" inputmode="numeric" autocomplete="off" required></label>
-        <label>Fin <input class="date-eu" name="end_date" placeholder="31/12/2026" inputmode="numeric" autocomplete="off" required></label>
+        <label>Début <input class="date-eu" name="start_date" placeholder="01/04/2027" inputmode="numeric" autocomplete="off" required></label>
+        <label>Fin <input class="date-eu" name="end_date" placeholder="15/04/2027" inputmode="numeric" autocomplete="off" required></label>
         <label>Tarif / nuit <input type="number" step="1" name="nightly_rate" required></label>
         <label class="chk"><input type="checkbox" name="is_closed" value="1"> Période fermée</label>
     </div>
-    <p class="hint">Dates au format européen : jour/mois/année, par exemple 01/12/2026. Le créneau est ajouté en bas de liste : déplacez-le ensuite avec les flèches.</p>
+    <p class="hint">Dates au format européen : jour/mois/année, par exemple 01/04/2027. L’année saisie est enregistrée (plus de retour forcé à l’année en cours). Le créneau est ajouté en bas de liste : déplacez-le ensuite avec les flèches.</p>
     <button type="submit">Ajouter</button>
 </form>
 

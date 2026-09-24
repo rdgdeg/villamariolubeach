@@ -329,7 +329,7 @@ $shops = [
                         <?php foreach ($seasons as $s): ?>
                             <?php $closed = (int) $s['is_closed']; $rate = (float) $s['nightly_rate']; ?>
                             <tr class="<?= $closed ? 'is-closed' : '' ?>">
-                                <td><?= e($s['label']) ?></td>
+                                <td><?= e(season_label($s)) ?></td>
                                 <?php if ($closed): ?>
                                     <td class="num" colspan="3"><?= e(t('prices.closed')) ?></td>
                                 <?php else: ?>

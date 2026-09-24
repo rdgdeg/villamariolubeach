@@ -384,24 +384,24 @@ function handle_admin(array $segments): void
                 $start = parse_eu_date((string) post('start_date'));
                 $end = parse_eu_date((string) post('end_date'));
                 if (!$start || !$end) {
-                    flash('error', 'Indiquez les dates au format européen, par exemple 01/12/2026.');
+                    flash('error', 'Indiquez les dates au format européen, par exemple 01/04/2027.');
                     redirect(base_url('admin/pricing'));
                 }
                 if ($form === 'season_update') {
                     $stmt = db()->prepare(
-                        'UPDATE rate_seasons SET label=?, start_month=?, start_day=?, end_month=?, end_day=?, nightly_rate=?, is_closed=?, sort_order=? WHERE id=?'
+                        'UPDATE rate_seasons SET label=?, year=?, start_month=?, start_day=?, end_month=?, end_day=?, nightly_rate=?, is_closed=?, sort_order=? WHERE id=?'
                     );
                     $stmt->execute([
-                        post('label'), $start['month'], $start['day'],
+                        post('label'), $start['year'], $start['month'], $start['day'],
                         $end['month'], $end['day'], (float) post('nightly_rate'),
                         post('is_closed') ? 1 : 0, (int) post('sort_order'), (int) post('id'),
                     ]);
                     flash('success', 'Période mise à jour.');
                 } else {
                     db()->prepare(
-                        'INSERT INTO rate_seasons (label, year, start_month, start_day, end_month, end_day, nightly_rate, is_closed, sort_order) VALUES (?,NULL,?,?,?,?,?,?,?)'
+                        'INSERT INTO rate_seasons (label, year, start_month, start_day, end_month, end_day, nightly_rate, is_closed, sort_order) VALUES (?,?,?,?,?,?,?,?,?)'
                     )->execute([
-                        post('label'), $start['month'], $start['day'],
+                        post('label'), $start['year'], $start['month'], $start['day'],
                         $end['month'], $end['day'], (float) post('nightly_rate'),
                         post('is_closed') ? 1 : 0, Pricing::nextSortOrder(),
                     ]);

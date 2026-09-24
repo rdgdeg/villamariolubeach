@@ -307,7 +307,7 @@ class Database
             'iun' => 'S5635',
             'address' => 'Via Patroclo, 07051 Budoni (Tanaunella) — SS',
             'email' => 'VillaMarioluBeach@gmail.com',
-            'notify_email' => 'luxuryvillamariolu@gmail.com',
+            'notify_email' => 'villamariolubeach@gmail.com',
             'instagram' => 'https://www.instagram.com/villa_mariolu_beach_budoni/',
             'facebook' => 'https://www.facebook.com/VillaMarioluBeachBudoniSardegna',
             'google_reviews' => 'https://share.google/uUeSIM645i1E55wSX',
@@ -339,6 +339,9 @@ class Database
         $this->ensureFivePercentDiscount();
         $this->pdo->prepare('UPDATE settings SET setting_value = ? WHERE setting_key = ? AND setting_value IN (?, ?)')
             ->execute(['15', 'deposit_percent', '10', '20']);
+        // Adresse admin unique pour les notifs « Nouvelle demande » (Raph / Concetto).
+        $this->pdo->prepare('UPDATE settings SET setting_value = ? WHERE setting_key = ? AND LOWER(setting_value) = ?')
+            ->execute(['villamariolubeach@gmail.com', 'notify_email', 'luxuryvillamariolu@gmail.com']);
     }
 
     private static function ownerRateRows(): array

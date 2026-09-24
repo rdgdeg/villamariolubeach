@@ -133,6 +133,7 @@
             weekdays: <?= json_encode(t_arr('calendar.weekdays')) ?>,
             months: <?= json_encode(t_arr('calendar.months')) ?>,
             turnover: <?= json_encode(t('calendar.turnover')) ?>,
+            arrival_day: <?= json_encode(t('calendar.arrival_day')) ?>,
             errors: {}
         }
     };</script>

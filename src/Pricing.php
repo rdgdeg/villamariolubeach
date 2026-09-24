@@ -176,7 +176,7 @@ class Pricing
             $nightly[] = [
                 'date' => $cursor->format('Y-m-d'),
                 'rate' => $closed ? 0.0 : (float) $season['nightly_rate'],
-                'label' => $closed ? 'Fermé / hors grille' : (string) $season['label'],
+                'label' => $closed ? 'Fermé / hors grille' : season_label((string) $season['label']),
             ];
             $cursor = $cursor->modify('+1 day');
         }
@@ -225,7 +225,7 @@ class Pricing
                 $nightly[] = [
                     'date' => $cursor->format('Y-m-d'),
                     'rate' => $rate,
-                    'label' => $season['label'],
+                    'label' => season_label((string) $season['label']),
                 ];
                 $subtotal += $rate;
             }

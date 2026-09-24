@@ -158,6 +158,68 @@ function format_eu_date_parts(int $day, int $month, ?int $year = null): string
     return sprintf('%02d/%02d/%04d', $day, $month, $year);
 }
 
+/** Année de fin affichée pour une période (gère le chevauchement déc./jan.). */
+function season_end_year(array $season): ?int
+{
+    $year = isset($season['year']) && $season['year'] !== null && $season['year'] !== ''
+        ? (int) $season['year']
+        : null;
+    if ($year === null) {
+        return null;
+    }
+    $start = ((int) $season['start_month'] * 100) + (int) $season['start_day'];
+    $end = ((int) $season['end_month'] * 100) + (int) $season['end_day'];
+    if ($start > $end) {
+        return $year + 1;
+    }
+    return $year;
+}
+
+/** Libellé de période traduit selon la langue courante (fallback = label DB). */
+function season_label(array|string $season): string
+{
+    $label = is_array($season) ? (string) ($season['label'] ?? '') : (string) $season;
+    if ($label === '') {
+        return '';
+    }
+    $map = t_arr('seasons.labels');
+    $translated = $label;
+    if (is_array($map) && $map !== []) {
+        if (isset($map[$label])) {
+            $translated = (string) $map[$label];
+        } else {
+            $norm = preg_replace('/\s+/u', ' ', str_replace(['–', '—'], '-', $label)) ?? $label;
+            $pairs = [];
+            foreach ($map as $fr => $to) {
+                $pairs[] = [
+                    'fr' => preg_replace('/\s+/u', ' ', str_replace(['–', '—'], '-', (string) $fr)) ?? (string) $fr,
+                    'to' => (string) $to,
+                ];
+            }
+            usort($pairs, static fn (array $a, array $b): int => mb_strlen($b['fr']) <=> mb_strlen($a['fr']));
+            foreach ($pairs as $pair) {
+                if ($pair['fr'] === $norm) {
+                    $translated = $pair['to'];
+                    break;
+                }
+                if ($pair['fr'] !== '' && str_starts_with($norm, $pair['fr'])) {
+                    $rest = ltrim(substr($norm, mb_strlen($pair['fr'])));
+                    // Suite du type "--> (250€/nuit)" ou " (250€/nuit)"
+                    if ($rest === '' || preg_match('/^(-->|->|\()/', $rest)) {
+                        $translated = $pair['to'] . substr($norm, strlen($pair['fr']));
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    $nightSuffix = t('seasons.night_suffix');
+    if ($nightSuffix !== '' && $nightSuffix !== 'seasons.night_suffix') {
+        $translated = preg_replace('/\/\s*nuits?\b/iu', $nightSuffix, $translated) ?? $translated;
+    }
+    return $translated;
+}
+
 /** @return array{day:int,month:int,year:int}|null */
 function parse_eu_date(string $value): ?array
 {

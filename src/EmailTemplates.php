@@ -61,12 +61,12 @@ class EmailTemplates
                 )->execute([$kind, $lang, $msg['subject'], $msg['body'], date('Y-m-d H:i:s')]);
             }
         }
-        self::refreshPack('2026-09-23-owner-gmail-sign', array_keys(self::kinds()));
+        self::refreshPack('2026-09-24-balance-wording-notify', array_keys(self::kinds()));
     }
 
     public static function ensureLatestCopy(): void
     {
-        self::refreshPack('2026-09-23-owner-gmail-sign', array_keys(self::kinds()));
+        self::refreshPack('2026-09-24-balance-wording-notify', array_keys(self::kinds()));
     }
 
     /** @param list<string> $kinds */

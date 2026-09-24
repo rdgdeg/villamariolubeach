@@ -68,20 +68,61 @@ class Availability
         return $map;
     }
 
-    /** Jour de départ : check-out exclusif, à afficher à moitié occupé. */
+    /** Jour de départ : check-out exclusif, à afficher à moitié occupé (résas + blocages). */
     public static function turnoverMap(string $from, string $to): array
     {
         $stmt = db()->prepare(
             "SELECT check_out, status FROM bookings
-             WHERE status IN ('confirmed', 'pending')
+             WHERE status IN ('confirmed', 'pending', 'blocked')
                AND check_out >= ? AND check_out < ?"
         );
         $stmt->execute([$from, $to]);
-        $rank = ['booked' => 3, 'pending' => 2];
+        $rank = ['booked' => 3, 'blocked' => 3, 'pending' => 2];
         $map = [];
         foreach ($stmt->fetchAll() as $row) {
-            $status = $row['status'] === 'confirmed' ? 'booked' : 'pending';
+            $status = match ($row['status']) {
+                'confirmed' => 'booked',
+                'blocked' => 'blocked',
+                'pending' => 'pending',
+                default => null,
+            };
+            if ($status === null) {
+                continue;
+            }
             $key = (string) $row['check_out'];
+            $prev = $map[$key] ?? null;
+            if ($prev === null || ($rank[$status] ?? 0) >= ($rank[$prev] ?? 0)) {
+                $map[$key] = $status;
+            }
+        }
+        return $map;
+    }
+
+    /**
+     * Jour d’arrivée : première nuit d’une résa / d’un blocage.
+     * Affiché en demi-journée (matin libre) si la nuit précédente n’est pas occupée.
+     */
+    public static function checkinMap(string $from, string $to): array
+    {
+        $stmt = db()->prepare(
+            "SELECT check_in, status FROM bookings
+             WHERE status IN ('confirmed', 'pending', 'blocked')
+               AND check_in >= ? AND check_in < ?"
+        );
+        $stmt->execute([$from, $to]);
+        $rank = ['booked' => 3, 'blocked' => 3, 'pending' => 2];
+        $map = [];
+        foreach ($stmt->fetchAll() as $row) {
+            $status = match ($row['status']) {
+                'confirmed' => 'booked',
+                'blocked' => 'blocked',
+                'pending' => 'pending',
+                default => null,
+            };
+            if ($status === null) {
+                continue;
+            }
+            $key = (string) $row['check_in'];
             $prev = $map[$key] ?? null;
             if ($prev === null || ($rank[$status] ?? 0) >= ($rank[$prev] ?? 0)) {
                 $map[$key] = $status;
@@ -121,9 +162,12 @@ class Availability
             ?: new DateTimeImmutable('first day of this month');
         $start = $start->modify('first day of this month');
         $end = $start->modify('+' . $months . ' months');
-        $map = self::occupiedMap($start->format('Y-m-d'), $end->format('Y-m-d'));
-        $turnovers = self::turnoverMap($start->format('Y-m-d'), $end->format('Y-m-d'));
-        $occ = $withOccupancy ? self::occupancyIndex($start->format('Y-m-d'), $end->format('Y-m-d')) : [];
+        $from = $start->format('Y-m-d');
+        $to = $end->format('Y-m-d');
+        $map = self::occupiedMap($from, $to);
+        $turnovers = self::turnoverMap($from, $to);
+        $checkins = self::checkinMap($from, $to);
+        $occ = $withOccupancy ? self::occupancyIndex($from, $to) : [];
 
         $result = [];
         $cursor = $start;
@@ -141,6 +185,15 @@ class Availability
                 $turnover = $turnovers[$date] ?? null;
                 if ($turnover && !in_array($day['status'], ['booked', 'pending', 'blocked'], true)) {
                     $day['turnover'] = $turnover;
+                }
+                $checkin = $checkins[$date] ?? null;
+                if ($checkin && in_array($day['status'], ['booked', 'pending', 'blocked'], true)) {
+                    $prevKey = (new DateTimeImmutable($date))->modify('-1 day')->format('Y-m-d');
+                    $prevStatus = $map[$prevKey] ?? 'available';
+                    // Demi-arrivée seulement si la nuit précédente n’est pas déjà prise (pas back-to-back).
+                    if (!self::isNightBlocked($prevStatus)) {
+                        $day['checkin'] = $checkin;
+                    }
                 }
                 if ($withOccupancy) {
                     $day['booking_id'] = $info['id'] ?? null;

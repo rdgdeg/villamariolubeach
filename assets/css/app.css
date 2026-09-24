@@ -715,11 +715,21 @@ h2 { font-size: clamp(1.7rem, 3.6vw, 3rem); }
 }
 .cal-day.turnover-booked { background: linear-gradient(90deg, #8f3d2c 50%, #1f7a4d 50%); color: #fff; }
 .cal-day.turnover-pending { background: linear-gradient(90deg, #d4a05a 50%, #1f7a4d 50%); color: var(--sea-deep); }
+.cal-day.turnover-blocked { background: linear-gradient(90deg, #c9c6c1 50%, #1f7a4d 50%); color: #6f6b66; }
 .cal-day.unavailable.turnover-booked,
 .cal-day.blocked.turnover-booked { background: linear-gradient(90deg, #8f3d2c 50%, #c9c6c1 50%); color: #fff; }
 .cal-day.unavailable.turnover-pending,
 .cal-day.blocked.turnover-pending { background: linear-gradient(90deg, #d4a05a 50%, #c9c6c1 50%); }
-.cal-day.turnover::after {
+.cal-day.unavailable.turnover-blocked,
+.cal-day.blocked.turnover-blocked { background: linear-gradient(90deg, #c9c6c1 50%, #a8a59f 50%); color: #6f6b66; }
+.cal-day.checkin-booked { background: linear-gradient(90deg, #1f7a4d 50%, #8f3d2c 50%); color: #fff; }
+.cal-day.checkin-pending { background: linear-gradient(90deg, #1f7a4d 50%, #d4a05a 50%); color: var(--sea-deep); }
+.cal-day.checkin-blocked { background: linear-gradient(90deg, #1f7a4d 50%, #c9c6c1 50%); color: #fff; }
+.cal-day.unavailable.checkin-booked { background: linear-gradient(90deg, #c9c6c1 50%, #8f3d2c 50%); color: #fff; }
+.cal-day.unavailable.checkin-pending { background: linear-gradient(90deg, #c9c6c1 50%, #d4a05a 50%); }
+.cal-day.unavailable.checkin-blocked { background: linear-gradient(90deg, #c9c6c1 50%, #a8a59f 50%); color: #6f6b66; }
+.cal-day.turnover::after,
+.cal-day.checkin::after {
     content: '';
     position: absolute;
     inset: 0;
